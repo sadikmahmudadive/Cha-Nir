@@ -12,7 +12,7 @@ export function HeroContent() {
       variants={stagger(0.09, 0.05)}
       initial="hidden"
       animate="show"
-      className="relative z-10 flex flex-col items-start gap-6 py-10 lg:max-w-[34rem] lg:py-0"
+      className="relative z-10 flex flex-col items-start gap-6 py-6 lg:max-w-[34rem] lg:py-0"
     >
       <motion.p variants={fadeUp} className="t-eyebrow text-tea-600">
         Authentic Bangladeshi tea
@@ -33,7 +33,7 @@ export function HeroContent() {
           Explore Wholesale
         </Button>
       </motion.div>
-      <motion.p variants={fadeUp} className="text-sm text-ink-mute">
+      <motion.p variants={fadeUp} className="text-sm text-ink-mute max-lg:hidden">
         Pure • Organic • Deshi · for homes, tea stalls, shops, hotels and restaurants.
       </motion.p>
     </motion.div>

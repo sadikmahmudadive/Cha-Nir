@@ -9,7 +9,8 @@ import { TeaLeafSystem } from "./TeaLeafSystem";
 import { TeaLighting } from "./TeaLighting";
 import { TeaLiquid } from "./TeaLiquid";
 import { TeaSteamSystem } from "./TeaSteamSystem";
-import { LOOP, loopOpacity, makeLeafPlans } from "./timeline";
+import { LOOP, T_FINAL, loopOpacity, makeLeafPlans } from "./timeline";
+import * as THREE from "three";
 
 export interface TeaSceneProps {
   /** Scene is on-screen and tab visible: render. Otherwise rendering stops. */
@@ -25,6 +26,8 @@ export interface TeaSceneProps {
   /** Dissolve wrapper that receives the loop's fade opacity. */
   fadeRef: RefObject<HTMLDivElement | null>;
   onReady: () => void;
+  /** Scroll-driven mode: 0..1 progress; the timeline scrubs (both directions) instead of looping. */
+  scrollRef?: MutableRefObject<number>;
   /** Debug/capture: freeze at this time (seconds). */
   fixedT?: number;
 }
@@ -36,6 +39,7 @@ function Director({
   startedRef,
   fadeRef,
   fixedT,
+  scrollRef,
 }: {
   tRef: MutableRefObject<number>;
   pausedRef: MutableRefObject<boolean>;
@@ -43,12 +47,17 @@ function Director({
   startedRef: MutableRefObject<boolean>;
   fadeRef: RefObject<HTMLDivElement | null>;
   fixedT?: number;
+  scrollRef?: MutableRefObject<number>;
 }) {
   useFrame((state, delta) => {
     if (fixedT !== undefined) tRef.current = fixedT;
-    else if (startedRef.current && !pausedRef.current) tRef.current = (tRef.current + Math.min(delta, 0.1)) % LOOP;
+    else if (scrollRef) {
+      // scrub: ease the shared clock toward the scroll position (smooth in both directions)
+      tRef.current = THREE.MathUtils.damp(tRef.current, scrollRef.current * T_FINAL, 7, Math.min(delta, 0.1));
+    }
+    else if (!scrollRef && startedRef.current && !pausedRef.current) tRef.current = (tRef.current + Math.min(delta, 0.1)) % LOOP;
     const el = fadeRef.current;
-    if (el) el.style.opacity = String(fixedT !== undefined ? 1 : loopOpacity(tRef.current));
+    if (el) el.style.opacity = String(fixedT !== undefined || scrollRef ? 1 : loopOpacity(tRef.current));
   }, -10);
 
   const gl = useThree((s) => s.gl);
@@ -79,7 +88,7 @@ function Ready({ onReady }: { onReady: () => void }) {
   return null;
 }
 
-export default function TeaScene({ active, paused, lowPower, pointerEnabled, wide, fadeRef, onReady, fixedT }: TeaSceneProps) {
+export default function TeaScene({ active, paused, lowPower, pointerEnabled, wide, fadeRef, onReady, fixedT, scrollRef }: TeaSceneProps) {
   const tRef = useRef(fixedT ?? 0);
   const pausedRef = useRef(paused);
   const startedRef = useRef(false);
@@ -106,7 +115,7 @@ export default function TeaScene({ active, paused, lowPower, pointerEnabled, wid
       style={{ touchAction: "pan-y" }}
       aria-hidden
     >
-      <Director tRef={tRef} pausedRef={pausedRef} startedRef={startedRef} fadeRef={fadeRef} fixedT={fixedT} />
+      <Director tRef={tRef} pausedRef={pausedRef} startedRef={startedRef} fadeRef={fadeRef} fixedT={fixedT} scrollRef={scrollRef} />
       <Suspense fallback={null}>
         <TeaCamera tRef={tRef} pointerEnabled={pointerEnabled} wide={wide} />
         <TeaLighting tRef={tRef} animate={animate && !off.has("shadow")} lowPower={lowPower} debugOff={off} />

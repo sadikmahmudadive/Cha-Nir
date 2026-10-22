@@ -52,6 +52,8 @@ Principles: HTML owns all text, CTAs, prices and forms. 3D is a layered enhancem
 Test hooks: `?3d=off` forces the fallback, `?3d=on` skips device heuristics.
 
 ### Tea ritual hero (`src/components/three/tea/`)
+**The animation is scroll-driven.** The hero is a 340svh section with a sticky stage; scroll progress (Motion `useScroll`) sets a target time and the shared clock eases toward it, so the ritual scrubs forward and backward and never hijacks scrolling. Reduced-motion / no-WebGL / constrained devices get a normal-height hero with the static poster (the time-based loop still exists for `?tea_t` and capture use).
+
 A real-time scene: a Cha Nir carton opens, loose leaves pour into a glass of hot water, the water infuses to dark amber-black tea, steam rises, hold, dissolve, repeat (loop 12.6 s: ~8 s story, ~3.7 s hold on the final composition).
 
 | File | Role |
