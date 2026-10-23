@@ -26,7 +26,14 @@ const chapters: { n: string; title: string; body: string; kind: ArtKind; tone: A
     tone: "deep",
     image: "/images/image_processing.png",
   },
-  { n: "03", title: "Packaging", body: "Packed in sizes for homes and for business, from small retail packs to bulk supply.", kind: "pack", tone: "deep" },
+  {
+    n: "03",
+    title: "Packaging",
+    body: "Packed in sizes for homes and for business, from small retail packs to bulk supply.",
+    kind: "pack",
+    tone: "deep",
+    image: "/images/image_packeging.png",
+  },
   { n: "04", title: "Sharing", body: "Then the best part: a pot on the table, a glass in the hand, a conversation worth staying for.", kind: "ritual", tone: "warm" },
 ];
 
