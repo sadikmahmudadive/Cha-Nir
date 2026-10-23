@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,8 +9,15 @@ import type { ArtKind, ArtTone } from "@/types/catalog";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const chapters: { n: string; title: string; body: string; kind: ArtKind; tone: ArtTone }[] = [
-  { n: "01", title: "Sourcing", body: "Cha Nir sources tea from quality tea gardens across Bangladesh, choosing leaf for character, colour and consistency.", kind: "garden", tone: "deep" },
+const chapters: { n: string; title: string; body: string; kind: ArtKind; tone: ArtTone; image?: string }[] = [
+  {
+    n: "01",
+    title: "Sourcing",
+    body: "Cha Nir sources tea from quality tea gardens across Bangladesh, choosing leaf for character, colour and consistency.",
+    kind: "garden",
+    tone: "deep",
+    image: "/images/image_sourching.png",
+  },
   { n: "02", title: "Processing", body: "The leaf is carefully processed and graded, so every pack brews the way you expect it to.", kind: "leaf", tone: "deep" },
   { n: "03", title: "Packaging", body: "Packed in sizes for homes and for business, from small retail packs to bulk supply.", kind: "pack", tone: "deep" },
   { n: "04", title: "Sharing", body: "Then the best part: a pot on the table, a glass in the hand, a conversation worth staying for.", kind: "ritual", tone: "warm" },
@@ -64,7 +72,18 @@ export function StoryChapters() {
         {chapters.map((c, i) => (
           <div key={c.n} data-layer className="absolute inset-0 motion-reduce:relative motion-reduce:h-[70svh]">
             <div data-art className="absolute inset-0">
-              <ArtImage kind={c.kind} tone={c.tone} seed={i + 12} className="absolute inset-0 size-full" />
+              {c.image ? (
+                <Image
+                  src={c.image}
+                  alt={c.title}
+                  fill
+                  priority={i === 0}
+                  className="size-full object-cover object-center"
+                  sizes="100vw"
+                />
+              ) : (
+                <ArtImage kind={c.kind} tone={c.tone} seed={i + 12} className="absolute inset-0 size-full" />
+              )}
             </div>
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-night via-night/45 to-night/10" />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-night/85 via-night/30 to-transparent" />
