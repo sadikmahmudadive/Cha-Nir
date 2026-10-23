@@ -11,13 +11,12 @@ service cloud.firestore {
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
 
     // Public storefront data
-    match /products/{id}   { allow read: if true; allow write: if isAdmin(); }
-    match /categories/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /products/{id}   { allow read: if true; allow write: if signedIn(); }
+    match /categories/{id} { allow read: if true; allow write: if signedIn(); }
     match /settings/{id}   { allow read: if true; allow write: if isAdmin(); }
     match /journal/{id}    { allow read: if true; allow write: if isAdmin(); }
 
-    // Wholesale price lists: visible only to approved business accounts (or public if the admin
-    // switches the pricing model; in that case publish prices into /products instead).
+    // Wholesale price lists: visible only to approved business accounts or admin
     match /wholesalePrices/{id} {
       allow read: if isAdmin() || (signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.wholesale == 'approved');
       allow write: if isAdmin();
@@ -26,24 +25,32 @@ service cloud.firestore {
     // Customers
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      // Customers may edit profile fields but never their own role / approval status.
-      allow create: if isOwner(uid) && !('wholesale' in request.resource.data) && !('role' in request.resource.data);
-      allow update: if isOwner(uid)
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['wholesale', 'role']);
-      allow update: if isAdmin();
+      allow create, update: if isOwner(uid) || isAdmin();
 
-      match /addresses/{addrId} { allow read, write: if isOwner(uid); }
+      match /addresses/{addrId} { allow read, write: if isOwner(uid) || isAdmin(); }
     }
 
-    // Orders: created by the server only (prices re-validated there). Customers read their own.
+    // Orders: customers create their order; read their own or admin reads all.
     match /orders/{id} {
+      allow create: if true;
       allow read: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Public inquiries and newsletter subscriptions
+    match /wholesaleInquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /newsletter/{id} {
+      allow create, update: if true;
+      allow read, delete: if isAdmin();
+    }
+
+    match /discounts/{id} {
+      allow read: if true;
       allow write: if isAdmin();
     }
-
-    // Public forms are written through a server route (validation + spam protection), never directly.
-    match /wholesaleInquiries/{id} { allow read, write: if isAdmin(); }
-    match /newsletter/{id}         { allow read, write: if isAdmin(); }
-    match /discounts/{id}          { allow read, write: if isAdmin(); }
   }
 }

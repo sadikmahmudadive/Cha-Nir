@@ -14,6 +14,8 @@ import { journal } from "@/data/demo/content";
 import { isEmail } from "@/lib/format";
 import { fadeUp, reveal, stagger } from "@/lib/motion";
 import { cn } from "@/lib/cn";
+import { firebaseConfigured } from "@/lib/firebase/client";
+import { subscribeNewsletter } from "@/lib/firebase/services";
 
 /* ── D. Trust strip ───────────────────────────────────────── */
 const values = [
@@ -244,17 +246,25 @@ export function Newsletter() {
             <p className="mt-3 max-w-md text-ink-soft">New teas, brewing tips and wholesale updates. Occasional, never noisy.</p>
           </div>
           {state === "done" ? (
-            <Alert tone="success" live title="You're on the list (prototype)">
-              In the live site this would save your email to Firestore and send a confirmation. No email was sent from this prototype.
+            <Alert tone="success" live title={firebaseConfigured ? "You're on the list" : "You're on the list (prototype)"}>
+              {firebaseConfigured
+                ? "Thank you for subscribing! Your email has been saved and you'll receive updates on new teas and brewing guides."
+                : "In the live site this would save your email to Firestore and send a confirmation. No email was sent from this prototype."}
             </Alert>
           ) : (
             <form
               noValidate
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 if (!isEmail(email)) return setState("error");
                 setState("loading");
-                setTimeout(() => setState("done"), 900);
+                try {
+                  await subscribeNewsletter(email, "home_newsletter");
+                  setState("done");
+                } catch (err) {
+                  console.error("Newsletter subscription error:", err);
+                  setState("error");
+                }
               }}
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start">

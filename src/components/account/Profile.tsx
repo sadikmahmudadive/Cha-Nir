@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { Check, MapPin, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authActions, useAuth } from "@/context/auth-store";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -11,6 +11,8 @@ import { Alert, EmptyState } from "@/components/ui/misc";
 import { Sheet } from "@/components/ui/Sheet";
 import { districts } from "@/data/demo/content";
 import { isBdPhone } from "@/lib/format";
+import { firebaseConfigured } from "@/lib/firebase/client";
+import { fetchUserAddresses, removeUserAddress, saveUserAddress } from "@/lib/firebase/services";
 
 interface Addr { id: string; label: string; address: string; district: string; isDefault: boolean }
 
@@ -20,6 +22,15 @@ export function ProfileSection() {
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [err, setErr] = useState<{ name?: string; phone?: string }>({});
   const [saved, setSaved] = useState(false);
+
+  const [prevUser, setPrevUser] = useState(user);
+  if (user !== prevUser) {
+    setPrevUser(user);
+    if (user) {
+      setName(user.name || "");
+      setPhone(user.phone || "");
+    }
+  }
 
   const save = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,15 +70,32 @@ export function ProfileSection() {
 }
 
 export function AddressesSection() {
-  const [list, setList] = useState<Addr[]>([
-    { id: "a1", label: "Home", address: "House 12, Road 4, Dhanmondi", district: "Dhaka", isDefault: true },
-  ]);
+  const { user } = useAuth();
+  const [list, setList] = useState<Addr[]>(() =>
+    firebaseConfigured && user?.uid
+      ? []
+      : [{ id: "a1", label: "Home", address: "House 12, Road 4, Dhanmondi", district: "Dhaka", isDefault: true }],
+  );
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState<Addr | null>(null);
   const [f, setF] = useState({ label: "", address: "", district: "" });
   const [err, setErr] = useState<Record<string, string>>({});
 
-  const add = (e: React.FormEvent) => {
+  useEffect(() => {
+    let active = true;
+    if (firebaseConfigured && user?.uid) {
+      fetchUserAddresses(user.uid)
+        .then((addrs) => {
+          if (active) setList(addrs);
+        })
+        .catch(() => {});
+    }
+    return () => {
+      active = false;
+    };
+  }, [user?.uid]);
+
+  const add = async (e: React.FormEvent) => {
     e.preventDefault();
     const x: Record<string, string> = {};
     if (!f.label.trim()) x.label = "Give this address a name, like Home or Shop.";
@@ -75,7 +103,17 @@ export function AddressesSection() {
     if (!f.district) x.district = "Choose a district.";
     setErr(x);
     if (Object.keys(x).length) return;
-    setList((l) => [...l, { id: `a${Date.now()}`, ...f, isDefault: l.length === 0 }]);
+
+    if (firebaseConfigured && user?.uid) {
+      try {
+        const saved = await saveUserAddress(user.uid, { ...f, isDefault: list.length === 0 });
+        setList((l) => [...l, saved]);
+      } catch (err) {
+        console.error("Save address error:", err);
+      }
+    } else {
+      setList((l) => [...l, { id: `a${Date.now()}`, ...f, isDefault: l.length === 0 }]);
+    }
     setF({ label: "", address: "", district: "" });
     setOpen(false);
   };
@@ -123,7 +161,24 @@ export function AddressesSection() {
         <p className="text-ink-soft">Delete your <strong>{confirm?.label}</strong> address? This can&rsquo;t be undone.</p>
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="ghost" onClick={() => setConfirm(null)}>Keep it</Button>
-          <Button variant="danger" onClick={() => { setList((l) => l.filter((x) => x.id !== confirm?.id)); setConfirm(null); }}>Delete</Button>
+          <Button
+            variant="danger"
+            onClick={async () => {
+              if (confirm) {
+                if (firebaseConfigured && user?.uid) {
+                  try {
+                    await removeUserAddress(user.uid, confirm.id);
+                  } catch (e) {
+                    console.error("Remove address error:", e);
+                  }
+                }
+                setList((l) => l.filter((x) => x.id !== confirm.id));
+                setConfirm(null);
+              }
+            }}
+          >
+            Delete
+          </Button>
         </div>
       </Sheet>
     </section>

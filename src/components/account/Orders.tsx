@@ -13,6 +13,11 @@ import { cn } from "@/lib/cn";
 import { formatBDT, formatDate } from "@/lib/format";
 import type { Order } from "@/types/catalog";
 
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/auth-store";
+import { firebaseConfigured } from "@/lib/firebase/client";
+import { fetchUserOrders } from "@/lib/firebase/services";
+
 function reorder(o: Order) {
   o.lines.forEach((l) => {
     const p = productById(l.productId);
@@ -23,12 +28,44 @@ function reorder(o: Order) {
 }
 
 export function OrdersList() {
-  const orders = [...demoOrders].reverse();
+  const { user } = useAuth();
+  const [realOrders, setRealOrders] = useState<Order[] | null>(null);
+  const [loading, setLoading] = useState(Boolean(firebaseConfigured && user?.uid));
+
+  useEffect(() => {
+    let active = true;
+    if (firebaseConfigured && user?.uid) {
+      fetchUserOrders(user.uid)
+        .then((ords) => {
+          if (active) setRealOrders(ords);
+        })
+        .catch(() => {
+          if (active) setRealOrders([]);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+    }
+    return () => {
+      active = false;
+    };
+  }, [user?.uid]);
+
+  const orders = realOrders !== null ? realOrders : [...demoOrders].reverse();
+
+  if (loading) {
+    return <p className="text-sm text-ink-mute py-8">Loading your orders…</p>;
+  }
+
   if (!orders.length)
     return <EmptyState icon={<Package className="size-8" aria-hidden />} title="No orders yet" body="When you place an order it will appear here." action={{ label: "Shop tea", href: "/shop" }} />;
   return (
     <div>
-      <p className="mb-4 text-sm text-ink-mute">Demo orders shown for the prototype.</p>
+      <p className="mb-4 text-sm text-ink-mute">
+        {realOrders !== null
+          ? `${realOrders.length} order${realOrders.length === 1 ? "" : "s"} found for your account.`
+          : "Demo orders shown for the prototype."}
+      </p>
       <ul className="space-y-4">
         {orders.map((o) => (
           <li key={o.id} className="rounded-card border border-line bg-paper p-5 sm:p-6">

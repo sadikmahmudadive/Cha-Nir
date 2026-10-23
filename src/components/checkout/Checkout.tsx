@@ -15,6 +15,9 @@ import { cn } from "@/lib/cn";
 import { formatBDT, isBdPhone, isEmail } from "@/lib/format";
 import { ease } from "@/lib/motion";
 import { site } from "@/lib/site";
+import { firebaseConfigured } from "@/lib/firebase/client";
+import { createOrder } from "@/lib/firebase/services";
+import { useAuth } from "@/context/auth-store";
 
 type Method = "cod" | "gateway";
 interface Form {
@@ -106,8 +109,14 @@ function OrderSummary({ district }: { district: string }) {
 }
 
 export function Checkout() {
+  const { user } = useAuth();
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<Form>(initial);
+  const [form, setForm] = useState<Form>(() => ({
+    ...initial,
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+  }));
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "placing" | "failed" | "success">("idle");
   const [simulateFail, setSimulateFail] = useState(false);
@@ -115,6 +124,20 @@ export function Checkout() {
   const cart = useCart(form.district);
   const heading = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
+
+  // Sync user details when auth resolves after mount
+  const [prevUser, setPrevUser] = useState(user);
+  if (user !== prevUser) {
+    setPrevUser(user);
+    if (user) {
+      setForm((f) => ({
+        ...f,
+        name: f.name || user.name || "",
+        email: f.email || user.email || "",
+        phone: f.phone || user.phone || "",
+      }));
+    }
+  }
 
   useEffect(() => {
     if (firstRender.current) {
@@ -144,18 +167,53 @@ export function Checkout() {
     setErrors(e);
     if (Object.keys(e).length) return;
     setStatus("placing");
-    await new Promise((r) => setTimeout(r, 1400));
-    if (form.payment === "gateway" && simulateFail) {
+
+    try {
+      if (form.payment === "gateway" && simulateFail) {
+        await new Promise((r) => setTimeout(r, 900));
+        setStatus("failed");
+        return;
+      }
+
+      const res = await createOrder({
+        uid: user?.uid ?? null,
+        customer: form.name,
+        email: form.email,
+        phone: form.phone,
+        district: form.district,
+        address: `${form.address}${form.area ? `, ${form.area}` : ""}`,
+        notes: form.notes,
+        payment: form.payment,
+        lines: cart.lines.map((l) => ({
+          productId: l.product.id,
+          variantId: l.variant.id,
+          productName: l.product.name,
+          variantLabel: l.variant.label,
+          qty: l.item.qty,
+          unitPrice: l.variant.price,
+          lineTotal: l.lineTotal,
+        })),
+        subtotal: cart.subtotal,
+        discount: cart.discountAmount,
+        discountCode: cart.discount,
+        delivery: cart.deliveryFee ?? 0,
+        total: cart.total,
+      });
+
+      setDone({
+        id: res.id,
+        total: cart.total,
+        payment: form.payment,
+        name: form.name,
+        district: form.district,
+        lines: cart.count,
+      });
+      cartActions.clear();
+      setStatus("success");
+    } catch (err) {
+      console.error("Order placement failed:", err);
       setStatus("failed");
-      return;
     }
-    // PROTOTYPE: no order is created or charged. Backend integration point:
-    // POST /api/orders (server action) → validate cart & prices server-side →
-    // write Firestore order → create payment session with the local gateway.
-    const id = `CN-DEMO-${Math.floor(1000 + Math.random() * 9000)}`;
-    setDone({ id, total: cart.total, payment: form.payment, name: form.name, district: form.district, lines: cart.count });
-    cartActions.clear();
-    setStatus("success");
   };
 
   /* ── success ─────────────────────────────────────── */
@@ -166,11 +224,17 @@ export function Checkout() {
           <PackageCheck className="size-10" aria-hidden />
         </motion.div>
         <h1 ref={heading} tabIndex={-1} className="t-h1 mt-6 text-tea-900 outline-none">Thank you, {done.name.split(" ")[0]}.</h1>
-        <p className="t-lead mt-3 text-ink-soft">Your order <strong className="text-ink">{done.id}</strong> is confirmed (prototype).</p>
+        <p className="t-lead mt-3 text-ink-soft">Your order <strong className="text-ink">{done.id}</strong> has been received.</p>
         <div className="mt-8 space-y-4 text-left">
-          <Alert tone="info" title="This is a design prototype">
-            No order was placed, no payment was taken and no confirmation was sent. In production this screen appears after the server has saved the order{done.payment === "gateway" ? " and the payment gateway has confirmed payment" : ""}.
-          </Alert>
+          {firebaseConfigured ? (
+            <Alert tone="success" title="Order recorded">
+              Your order has been saved to the database. You can track this and past orders from your account.
+            </Alert>
+          ) : (
+            <Alert tone="info" title="This is a design prototype">
+              No order was placed, no payment was taken and no confirmation was sent. In production this screen appears after the server has saved the order{done.payment === "gateway" ? " and the payment gateway has confirmed payment" : ""}.
+            </Alert>
+          )}
           <dl className="grid gap-3 rounded-card border border-line bg-paper p-5 text-sm sm:grid-cols-2">
             <div><dt className="text-ink-mute">Order total</dt><dd className="text-lg font-bold">{formatBDT(done.total)}</dd></div>
             <div><dt className="text-ink-mute">Payment</dt><dd className="font-semibold">{done.payment === "cod" ? "Cash on Delivery" : "Online payment"}</dd></div>

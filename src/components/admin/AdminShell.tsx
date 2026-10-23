@@ -17,8 +17,40 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { firebaseConfigured } from "@/lib/firebase/client";
+
+function SeedCatalogButton() {
+  const [seeding, setSeeding] = useState(false);
+  const [seeded, setSeeded] = useState(false);
+
+  const handleSeed = async () => {
+    setSeeding(true);
+    try {
+      const { seedCatalogToFirestore } = await import("@/lib/firebase/services");
+      await seedCatalogToFirestore();
+      setSeeded(true);
+      setTimeout(() => setSeeded(false), 4000);
+    } catch (e) {
+      console.error("Failed to seed catalog:", e);
+      alert("Seeding failed: " + (e instanceof Error ? e.message : "check console"));
+    } finally {
+      setSeeding(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleSeed}
+      disabled={seeding}
+      className="cursor-pointer font-semibold underline underline-offset-2 hover:opacity-80"
+    >
+      {seeding ? "Seeding to Firestore…" : seeded ? "✓ Catalog Seeded to Firestore!" : "Seed Catalog to Firestore"}
+    </button>
+  );
+}
 
 const nav: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -70,12 +102,21 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   <Link key={n.href} href={n.href} className={cn("shrink-0 rounded-full px-3 py-2 text-sm font-semibold", pathname === n.href ? "bg-tea-600 text-white" : "text-ink-soft")}>{n.label}</Link>
                 ))}
               </nav>
-              <p className="hidden text-sm text-ink-mute lg:block">Prototype admin · demo data only</p>
+              <p className="hidden text-sm text-ink-mute lg:block">
+                {firebaseConfigured ? "Firebase Connected (cha-nir)" : "Prototype admin · demo data only"}
+              </p>
               <p className="text-sm font-semibold">Admin user</p>
             </div>
-            <div className="border-t border-warn/20 bg-warn-bg px-4 py-2 text-xs text-warn sm:px-8">
-              Prototype: changes live only in this browser tab. Production requires Firebase Auth with an <code>admin</code> custom claim, Firestore security rules and server-side writes.
-            </div>
+            {firebaseConfigured ? (
+              <div className="border-t border-success/20 bg-success-bg px-4 py-2 text-xs text-success sm:px-8 flex items-center justify-between gap-4">
+                <span>Firebase Connected: <code>cha-nir</code> backend is active and ready.</span>
+                <SeedCatalogButton />
+              </div>
+            ) : (
+              <div className="border-t border-warn/20 bg-warn-bg px-4 py-2 text-xs text-warn sm:px-8">
+                Prototype: changes live only in this browser tab. Production requires Firebase Auth with an <code>admin</code> custom claim, Firestore security rules and server-side writes.
+              </div>
+            )}
           </header>
           <main id="main" className="mx-auto max-w-[96rem] p-4 sm:p-8">{children}</main>
         </div>

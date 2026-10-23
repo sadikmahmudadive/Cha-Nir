@@ -40,14 +40,36 @@ async function start() {
   started = true;
   if (firebaseConfigured) {
     const [auth, { onAuthStateChanged }] = await Promise.all([getFirebaseAuth(), import("firebase/auth")]);
-    onAuthStateChanged(auth, (u) =>
+    onAuthStateChanged(auth, async (u) => {
+      if (!u) {
+        set({ ready: true, user: null });
+        return;
+      }
+
+      let extra: Partial<AppUser> = {};
+      try {
+        const { getDb } = await import("@/lib/firebase/client");
+        const db = await getDb();
+        const { doc, getDoc } = await import("firebase/firestore");
+        const snap = await getDoc(doc(db, "users", u.uid));
+        if (snap.exists()) {
+          extra = snap.data() as Partial<AppUser>;
+        }
+      } catch (e) {
+        console.warn("Could not load user profile from Firestore:", e);
+      }
+
       set({
         ready: true,
-        user: u
-          ? { uid: u.uid, name: u.displayName ?? u.email?.split("@")[0] ?? "Customer", email: u.email ?? "" }
-          : null,
-      }),
-    );
+        user: {
+          uid: u.uid,
+          name: extra.name ?? u.displayName ?? u.email?.split("@")[0] ?? "Customer",
+          email: u.email ?? "",
+          phone: extra.phone ?? "",
+          wholesale: extra.wholesale ?? "none",
+        },
+      });
+    });
   } else {
     let user: AppUser | null = null;
     try {
@@ -104,6 +126,22 @@ export const authActions = {
       const [auth, m] = await Promise.all([getFirebaseAuth(), import("firebase/auth")]);
       const cred = await m.createUserWithEmailAndPassword(auth, input.email, input.password);
       await m.updateProfile(cred.user, { displayName: input.name });
+
+      try {
+        const { getDb } = await import("@/lib/firebase/client");
+        const db = await getDb();
+        const { doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+        await setDoc(doc(db, "users", cred.user.uid), {
+          uid: cred.user.uid,
+          name: input.name,
+          email: input.email,
+          phone: input.phone ?? "",
+          wholesale: "none",
+          createdAt: serverTimestamp(),
+        });
+      } catch (e) {
+        console.warn("Could not save user profile to Firestore:", e);
+      }
       return;
     }
     await wait(800);
@@ -125,11 +163,33 @@ export const authActions = {
     }
     saveDemo(null);
   },
-  updateProfile(patch: Partial<AppUser>) {
+  async updateProfile(patch: Partial<AppUser>) {
     if (!state.user) return;
     const next = { ...state.user, ...patch };
-    if (firebaseConfigured) set({ user: next });
-    else saveDemo(next);
+    if (firebaseConfigured) {
+      set({ user: next });
+      try {
+        const [auth, { updateProfile: updateAuthProfile }] = await Promise.all([
+          getFirebaseAuth(),
+          import("firebase/auth"),
+        ]);
+        if (auth.currentUser && patch.name) {
+          await updateAuthProfile(auth.currentUser, { displayName: patch.name });
+        }
+        const { getDb } = await import("@/lib/firebase/client");
+        const db = await getDb();
+        const { doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+        await setDoc(
+          doc(db, "users", state.user.uid),
+          { ...patch, updatedAt: serverTimestamp() },
+          { merge: true },
+        );
+      } catch (e) {
+        console.warn("Could not update user profile in Firestore:", e);
+      }
+    } else {
+      saveDemo(next);
+    }
   },
 };
 

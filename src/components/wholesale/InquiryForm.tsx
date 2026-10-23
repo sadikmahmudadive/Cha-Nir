@@ -10,6 +10,8 @@ import { categories, products } from "@/data/demo/catalog";
 import { districts } from "@/data/demo/content";
 import { isBdPhone, isEmail } from "@/lib/format";
 import { ease } from "@/lib/motion";
+import { firebaseConfigured } from "@/lib/firebase/client";
+import { submitWholesaleInquiry } from "@/lib/firebase/services";
 
 const businessTypes = ["Tea stall", "Tea shop", "Hotel", "Restaurant / café", "Retailer / reseller", "Office / institution", "Other"];
 
@@ -55,10 +57,24 @@ export function InquiryForm() {
       return;
     }
     setStatus("sending");
-    // PROTOTYPE: backend integration point.
-    // POST /api/wholesale-inquiries → validate (zod) → write Firestore `wholesaleInquiries` → notify the team.
-    await new Promise((r) => setTimeout(r, 1200));
-    setStatus("done");
+    try {
+      await submitWholesaleInquiry({
+        business: f.business.trim(),
+        contact: f.contact.trim(),
+        phone: f.phone.trim(),
+        email: f.email.trim(),
+        type: f.type,
+        location: f.location.trim(),
+        products: f.products,
+        qty: f.qty.trim(),
+        unit: f.unit,
+        message: f.message.trim(),
+      });
+      setStatus("done");
+    } catch (e) {
+      console.error("Wholesale inquiry submission error:", e);
+      setStatus("error");
+    }
   };
 
   return (
@@ -67,9 +83,13 @@ export function InquiryForm() {
         {status === "done" ? (
           <motion.div key="ok" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease }} className="py-6 text-center" role="status">
             <CheckCircle2 className="mx-auto size-14 text-tea-600" aria-hidden />
-            <h3 className="t-h2 mt-4 text-tea-900">Inquiry received (prototype)</h3>
+            <h3 className="t-h2 mt-4 text-tea-900">{firebaseConfigured ? "Inquiry received" : "Inquiry received (prototype)"}</h3>
             <p className="mx-auto mt-3 max-w-md text-ink-soft">
-              Thanks, {f.contact.split(" ")[0]}. In production the Cha Nir team would review your request and follow up on {f.phone} or {f.email}. Nothing was sent from this prototype.
+              {firebaseConfigured ? (
+                <>Thanks, {f.contact.split(" ")[0]}. Your inquiry has been saved. The Cha Nir wholesale team will review your requirements and follow up with you on {f.phone} or {f.email}.</>
+              ) : (
+                <>Thanks, {f.contact.split(" ")[0]}. In production the Cha Nir team would review your request and follow up on {f.phone} or {f.email}. Nothing was sent from this prototype.</>
+              )}
             </p>
             <Button variant="secondary" className="mt-6" onClick={() => { setF(blank); setStatus("idle"); }}>Send another inquiry</Button>
           </motion.div>

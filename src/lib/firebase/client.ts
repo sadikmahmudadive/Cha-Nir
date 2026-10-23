@@ -17,6 +17,7 @@ const config: FirebaseOptions = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 export const firebaseConfigured = Boolean(config.apiKey && config.projectId && config.appId);
@@ -40,4 +41,9 @@ export async function getFirebaseAuth() {
 export async function getDb() {
   const [app, { getFirestore }] = await Promise.all([getFirebaseApp(), import("firebase/firestore")]);
   return getFirestore(app);
+}
+
+export async function getFirebaseStorage() {
+  const [app, { getStorage }] = await Promise.all([getFirebaseApp(), import("firebase/storage")]);
+  return getStorage(app);
 }
