@@ -8,6 +8,8 @@ import { cn } from "@/lib/cn";
 import { useCapability, useHasFinePointer, usePrefersReducedMotion } from "../capability";
 import { HeroContent } from "./HeroContent";
 import { HeroFallback } from "./HeroFallback";
+import { HeroSensoryBadges } from "./HeroSensoryBadges";
+import { TEA_VARIETIES, type TeaVariety } from "./varieties";
 
 // The entire 3D scene (three + R3F + drei + shaders) is a separate chunk,
 // requested only when this hero is going to render it.
@@ -46,6 +48,7 @@ export function TeaHero() {
   const wide = useMedia("(min-width: 1024px)");
   const phone = useMedia("(max-width: 767px)");
   const fixedT = useFixedT();
+  const [activeVariety, setActiveVariety] = useState<TeaVariety>(TEA_VARIETIES[0]);
   const [idle, setIdle] = useState(false);
   const [ready, setReady] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -80,7 +83,7 @@ export function TeaHero() {
       >
         {/* Text column (real HTML, above the stage on every breakpoint) */}
         <div className={cn("container-x relative z-10 lg:flex lg:items-center", scrolly ? "lg:h-full" : "lg:min-h-[min(46rem,calc(100svh-7.5rem))]")}>
-          <HeroContent />
+          <HeroContent activeVariety={activeVariety} onSelectVariety={setActiveVariety} />
         </div>
 
         {/* Stage: reserved size, no layout shift. Overlays the section on desktop. */}
@@ -91,11 +94,21 @@ export function TeaHero() {
             scrolly ? "min-h-0 flex-1" : "-mt-4 aspect-square sm:aspect-[5/4]",
           )}
         >
+          {/* Dynamic terroir ambient halo matching selected tea liquor hue */}
           <div
             aria-hidden
-            className="absolute left-1/2 top-[52%] aspect-square w-[min(88%,100%)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-tea-100 max-lg:h-[96%] max-lg:w-auto lg:left-[64%] lg:w-[min(44rem,52vw)]"
+            className="absolute left-1/2 top-[52%] aspect-square w-[min(88%,100%)] -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-700 max-lg:h-[96%] max-lg:w-auto lg:left-[64%] lg:w-[min(44rem,52vw)]"
+            style={{
+              background: `radial-gradient(circle, ${activeVariety.accentColor}22 0%, var(--color-tea-100, #F0EFE6) 68%)`,
+            }}
           />
           <HeroFallback hidden={ready} />
+
+          {/* Floating sensory badges (altitude, pluck, live aroma notes) with spring parallax */}
+          <HeroSensoryBadges
+            variety={activeVariety}
+            pointerEnabled={finePointer && !reduced && !phone}
+          />
 
           {render3d && (
             <div className={cn("absolute inset-0 transition-opacity duration-700", ready ? "opacity-100" : "opacity-0")}>
@@ -108,6 +121,7 @@ export function TeaHero() {
                   wide={wide}
                   fadeRef={fade}
                   onReady={() => setReady(true)}
+                  variety={activeVariety}
                   fixedT={fixedT}
                   scrollRef={scrolly ? scrollRef : undefined}
                 />

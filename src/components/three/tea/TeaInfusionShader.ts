@@ -35,6 +35,8 @@ uniform vec4 uSrc[8];
 uniform vec4 uRip[8];
 uniform vec3 uLight;
 uniform float uSteps;
+uniform vec3 uSigma;
+uniform vec3 uWarmth;
 varying vec3 vP;
 varying vec3 vN;
 varying vec3 vCam;
@@ -116,8 +118,8 @@ void main() {
   }
   dens /= uSteps;
 
-  // wavelength-dependent absorption: blue first, then green, red last
-  vec3 sigma = vec3(0.75, 2.4, 5.4);
+  // wavelength-dependent absorption: blue first, then green, red last (driven by active variety)
+  vec3 sigma = uSigma;
   vec3 T = exp(-sigma * dens * L * 1.12);
   // The canvas is composited over the cream page, so we reproduce "background × T"
   // exactly with one scalar alpha: A = 1 - min(T), colour = B·(T - min T)/A (never negative).
@@ -125,7 +127,7 @@ void main() {
   float a = clamp(1.0 - Tm, 0.015, 0.95);
   vec3 B = vec3(0.95, 0.93, 0.87);
   vec3 c = clamp(B * (T - Tm) / a, 0.0, 1.0);
-  c += vec3(0.55, 0.34, 0.1) * (1.0 - Tm) * 0.16;       // warm in-scatter
+  c += uWarmth * (1.0 - Tm) * 0.16;       // warm in-scatter
   // faint glass-edge warmth (short path) so the rim never goes muddy
   float edge = smoothstep(0.0, 0.6, 0.55 - L * 0.5);
   c += vec3(0.3, 0.14, 0.03) * edge * (1.0 - Tm) * 0.3;
@@ -156,6 +158,7 @@ export const steamVertex = /* glsl */ `
 uniform float uT;
 uniform float uSwayAmt;
 uniform float uPhase;
+uniform float uWind;
 varying vec2 vUv;
 void main() {
   vUv = uv;
@@ -164,7 +167,7 @@ void main() {
   // widen as it rises, sway on two incommensurate sines, then drift sideways
   p.x *= mix(0.45, 1.25, y);
   p.x += (sin(y * 3.1 + uT * 0.9 + uPhase) * 0.09 + sin(y * 6.7 - uT * 0.6 + uPhase * 2.0) * 0.04) * uSwayAmt * y;
-  p.x += 0.2 * y * y * uSwayAmt;
+  p.x += (0.2 * y * y * uSwayAmt) + (uWind * y * 0.35);
   p.z += sin(y * 2.3 + uT * 0.7 + uPhase) * 0.05 * y;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
 }

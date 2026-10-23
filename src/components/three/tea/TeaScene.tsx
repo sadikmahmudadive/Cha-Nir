@@ -10,6 +10,7 @@ import { TeaLighting } from "./TeaLighting";
 import { TeaLiquid } from "./TeaLiquid";
 import { TeaSteamSystem } from "./TeaSteamSystem";
 import { LOOP, T_FINAL, loopOpacity, makeLeafPlans } from "./timeline";
+import { TEA_VARIETIES, type TeaVariety } from "./varieties";
 import * as THREE from "three";
 
 export interface TeaSceneProps {
@@ -26,6 +27,8 @@ export interface TeaSceneProps {
   /** Dissolve wrapper that receives the loop's fade opacity. */
   fadeRef: RefObject<HTMLDivElement | null>;
   onReady: () => void;
+  /** Active tea variety for optical absorption and in-scatter warmth. */
+  variety?: TeaVariety;
   /** Scroll-driven mode: 0..1 progress; the timeline scrubs (both directions) instead of looping. */
   scrollRef?: MutableRefObject<number>;
   /** Debug/capture: freeze at this time (seconds). */
@@ -88,7 +91,18 @@ function Ready({ onReady }: { onReady: () => void }) {
   return null;
 }
 
-export default function TeaScene({ active, paused, lowPower, pointerEnabled, wide, fadeRef, onReady, fixedT, scrollRef }: TeaSceneProps) {
+export default function TeaScene({
+  active,
+  paused,
+  lowPower,
+  pointerEnabled,
+  wide,
+  fadeRef,
+  onReady,
+  variety,
+  fixedT,
+  scrollRef,
+}: TeaSceneProps) {
   const tRef = useRef(fixedT ?? 0);
   const pausedRef = useRef(paused);
   const startedRef = useRef(false);
@@ -121,9 +135,9 @@ export default function TeaScene({ active, paused, lowPower, pointerEnabled, wid
         <TeaLighting tRef={tRef} animate={animate && !off.has("shadow")} lowPower={lowPower} debugOff={off} />
         {!off.has("box") && <TeaBox tRef={tRef} />}
         {!off.has("glass") && <TeaGlass />}
-        {!off.has("liquid") && <TeaLiquid tRef={tRef} plans={heroPlans} steps={lowPower ? 3 : 4} />}
+        {!off.has("liquid") && <TeaLiquid tRef={tRef} plans={heroPlans} steps={lowPower ? 3 : 4} variety={variety ?? TEA_VARIETIES[0]} />}
         {!off.has("leaves") && <TeaLeafSystem tRef={tRef} heroPlans={heroPlans} smallPlans={smallPlans} />}
-        {!off.has("steam") && <TeaSteamSystem tRef={tRef} ribbons={lowPower ? 2 : 4} />}
+        {!off.has("steam") && <TeaSteamSystem tRef={tRef} ribbons={lowPower ? 2 : 4} pointerEnabled={pointerEnabled} />}
         <Ready
           onReady={() => {
             startedRef.current = true;

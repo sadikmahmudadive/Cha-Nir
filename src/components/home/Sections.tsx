@@ -90,22 +90,61 @@ export function CategoryGrid() {
 }
 
 /* ── F. Bestsellers ───────────────────────────────────────── */
+/* ── F. Bestsellers & Botanical Vault ───────────────────────────── */
 export function FeaturedProducts() {
-  const items = products.filter((p) => p.featured || p.bestseller).slice(0, 4);
+  const [activeTab, setActiveTab] = useState<string>("all");
+
+  const filteredItems = products.filter((p) => {
+    if (activeTab === "all") return p.featured || p.bestseller;
+    return p.categoryId === activeTab;
+  }).slice(0, 4);
+
+  const tabs = [
+    { id: "all", label: "All Curated Harvests" },
+    { id: "cat-premium", label: "Orthodox Black" },
+    { id: "cat-green", label: "Single-Origin Green" },
+    { id: "cat-blends", label: "Specialty Blends" },
+  ];
+
   return (
     <section className="section-y bg-paper" aria-labelledby="feat-title">
       <div className="container-x">
-        <SectionHeading
-          eyebrow="Bestsellers & featured"
-          title={<span id="feat-title">A Better Cup Starts Here</span>}
-          action={
-            <Button href="/shop" variant="secondary" iconRight={<ArrowRight className="size-4" aria-hidden />}>
-              View All Tea
-            </Button>
-          }
-        />
-        <ProductGrid items={items} className="mt-12" />
-        <p className="mt-8 text-sm text-ink-mute">Demo catalogue: product names, pack sizes and prices are placeholders until the real catalogue is supplied.</p>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHeading
+            eyebrow="Botanical Flavor Vault & Harvests"
+            title={<span id="feat-title">A Better Cup Starts Here</span>}
+            body="Inspect single-origin terroir notes, cupping scores, and liquor profiles directly on each card."
+          />
+          <Button href="/shop" variant="secondary" iconRight={<ArrowRight className="size-4" aria-hidden />}>
+            View Full Vault ({products.length})
+          </Button>
+        </div>
+
+        {/* Botanical Filter Tabs */}
+        <div className="mt-8 flex flex-wrap gap-2">
+          {tabs.map((tab) => {
+            const isActive = tab.id === activeTab;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 cursor-pointer",
+                  isActive
+                    ? "bg-tea-900 text-cream shadow-xs"
+                    : "bg-cream/80 text-ink-soft hover:bg-cream hover:text-tea-900 border border-tea-900/10",
+                )}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <ProductGrid items={filteredItems} className="mt-8" />
+        <p className="mt-8 text-xs text-ink-mute">
+          100% Organic single-origin loose leaf • Nitrogen-flushed packaging • Direct from Sylhet & Panchagarh.
+        </p>
       </div>
     </section>
   );
