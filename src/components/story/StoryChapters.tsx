@@ -39,7 +39,7 @@ const chapters: ChapterData[] = [
     ],
     accent: "#A5BE16",
     icon: Mountain,
-    image: "/images/image_sourching.png",
+    image: "/images/image_sourching.webp",
     kind: "garden",
     tone: "deep",
   },
@@ -56,7 +56,7 @@ const chapters: ChapterData[] = [
     ],
     accent: "#D4A338",
     icon: Wind,
-    image: "/images/image_processing.png",
+    image: "/images/image_processing.webp",
     kind: "leaf",
     tone: "deep",
   },
@@ -73,7 +73,7 @@ const chapters: ChapterData[] = [
     ],
     accent: "#7EA835",
     icon: PackageCheck,
-    image: "/images/image_packeging.png",
+    image: "/images/image_packeging.webp",
     kind: "pack",
     tone: "deep",
   },
@@ -302,7 +302,7 @@ export function StoryChapters() {
                       aria-hidden
                     />
                     <Icon className="size-3.5" style={{ color: c.accent }} aria-hidden />
-                    <span className="font-bold uppercase tracking-wider text-[11px] text-cream">
+                    <span className="font-bold uppercase tracking-wider text-xs text-cream">
                       {c.phase}
                     </span>
                     <span className="text-cream/40" aria-hidden>·</span>
@@ -335,7 +335,7 @@ export function StoryChapters() {
                         key={st.label}
                         className="rounded-xl border border-cream/10 bg-white/5 px-3 py-1.5 backdrop-blur-xs transition-colors hover:bg-white/10"
                       >
-                        <span className="block text-[10px] font-bold uppercase tracking-wider text-cream/50">
+                        <span className="block text-xs font-bold uppercase tracking-wider text-cream/50">
                           {st.label}
                         </span>
                         <span className="block text-xs font-semibold text-cream">
@@ -398,7 +398,7 @@ export function StoryChapters() {
                 >
                   <div className="hidden lg:flex flex-col items-end">
                     <span
-                      className="text-[10px] font-bold uppercase tracking-wider"
+                      className="text-xs font-bold uppercase tracking-wider"
                       style={{ color: isActive ? ch.accent : "currentColor" }}
                     >
                       {ch.phase}

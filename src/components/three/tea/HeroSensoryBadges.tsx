@@ -84,7 +84,7 @@ export function HeroSensoryBadges({ variety, pointerEnabled }: HeroSensoryBadges
           <Sprout className="size-4.5" aria-hidden />
         </div>
         <div className="min-w-0 pr-1">
-          <span className="block text-[11px] font-bold uppercase tracking-wider text-tea-800">
+          <span className="block text-xs font-bold uppercase tracking-wider text-tea-800">
             {variety.plucking}
           </span>
           <span className="block text-xs text-ink-mute">
@@ -101,7 +101,7 @@ export function HeroSensoryBadges({ variety, pointerEnabled }: HeroSensoryBadges
         transition={{ duration: 0.7, delay: 0.3 }}
         className="pointer-events-auto absolute left-[44%] top-[22%] hidden rounded-2xl border border-tea-900/10 bg-cream/75 p-3 shadow-soft backdrop-blur-md transition-all duration-300 hover:bg-cream/90 xl:block"
       >
-        <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-tea-900">
+        <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-tea-900">
           <Sparkles className="size-3.5 text-tea-600" aria-hidden />
           <span>Aroma Profile</span>
         </div>

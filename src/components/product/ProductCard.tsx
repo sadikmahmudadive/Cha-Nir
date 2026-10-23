@@ -140,7 +140,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
           type="button"
           onClick={() => setIsVaultOpen((v) => !v)}
           className={cn(
-            "absolute right-3 bottom-3 z-10 flex items-center gap-1.5 rounded-full border border-tea-900/10 bg-cream/90 px-2.5 py-1 text-[11px] font-bold text-tea-900 shadow-soft backdrop-blur-md transition-all duration-200 cursor-pointer",
+            "absolute right-3 bottom-3 z-10 flex items-center gap-1.5 rounded-full border border-tea-900/10 bg-cream/90 px-2.5 py-1 text-xs font-bold text-tea-900 shadow-soft backdrop-blur-md transition-all duration-200 cursor-pointer",
             "hover:scale-105 hover:bg-white active:scale-95",
             isVaultOpen && "bg-tea-900 text-cream border-tea-900 hover:bg-tea-900",
           )}
@@ -174,7 +174,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
                     style={{ backgroundColor: botanical.liquorColor }}
                     aria-hidden
                   />
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-tea-950">
+                  <span className="text-xs font-bold uppercase tracking-wider text-tea-950">
                     Botanical Profile
                   </span>
                 </div>
@@ -190,17 +190,17 @@ export function ProductCard({ product, priority }: { product: Product; priority?
 
               {/* Terroir & Elevation Specs */}
               <div className="space-y-1 py-1 text-xs">
-                <div className="flex items-center justify-between text-[11px]">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-ink-mute">Terroir:</span>
                   <span className="font-semibold text-tea-900 truncate max-w-[130px]">
                     {botanical.terroir}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-[11px]">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-ink-mute">Elevation:</span>
                   <span className="font-semibold text-tea-900">{botanical.elevation}</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px]">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-ink-mute">Liquor:</span>
                   <span
                     className="font-bold truncate max-w-[130px]"
@@ -212,7 +212,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
               </div>
 
               {/* Sensory Metric Fill Bars */}
-              <div className="space-y-1.5 border-t border-tea-900/10 pt-2 text-[10px]">
+              <div className="space-y-1.5 border-t border-tea-900/10 pt-2 text-xs">
                 {[
                   { label: "Aroma", val: botanical.metrics.aroma },
                   { label: "Body", val: botanical.metrics.body },
@@ -239,7 +239,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
 
               {/* Tasting notes chips & brew prompt */}
               <div className="border-t border-tea-900/10 pt-2">
-                <div className="flex items-center justify-between text-[10px] text-ink-mute mb-1.5">
+                <div className="flex items-center justify-between text-xs text-ink-mute mb-1.5">
                   <span className="flex items-center gap-1 font-semibold text-tea-900">
                     <Flame className="size-3 text-tea-600" aria-hidden />
                     {botanical.brewSpecs.temp}
@@ -253,7 +253,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
                   {botanical.tastingNotes.map((note) => (
                     <span
                       key={note}
-                      className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-tea-950 border border-tea-900/10"
+                      className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-semibold text-tea-950 border border-tea-900/10"
                     >
                       {note}
                     </span>
@@ -269,7 +269,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
       <div className="mt-3.5 flex flex-1 flex-col gap-2 relative z-10">
         <div className="flex items-center justify-between gap-2">
           <p className="t-eyebrow text-tea-600">{cat?.name}</p>
-          <span className="text-[11px] font-medium text-ink-mute">
+          <span className="text-xs font-medium text-ink-mute">
             {botanical.elevation}
           </span>
         </div>
@@ -328,7 +328,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
         {/* Pricing */}
         <div className="mt-auto flex items-end justify-between gap-3 pt-2">
           <Price price={variant.price} compareAt={variant.compareAt} />
-          <span className="text-[11px] font-medium text-tea-700/80">
+          <span className="text-xs font-medium text-tea-700/80">
             {botanical.tastingNotes[0]}
           </span>
         </div>

@@ -275,7 +275,7 @@ export function ShopClient() {
     <div className="grid gap-10 lg:grid-cols-[17rem_1fr] xl:grid-cols-[18.5rem_1fr]">
       {/* desktop filters */}
       <aside aria-label="Filters" className="hidden lg:block">
-        <div className="sticky top-28 rounded-card border border-line bg-paper p-5">
+        <div className="sticky top-28 max-h-[calc(100svh-8rem)] overflow-y-auto overscroll-contain rounded-card border border-line bg-paper p-5">
           <div className="mb-1 flex items-center justify-between">
             <h2 className="font-display text-xl">Filters</h2>
             {chips.length > 0 && (

@@ -30,7 +30,7 @@ export function HeroContent({ activeVariety, onSelectVariety }: HeroContentProps
           style={{ backgroundColor: activeVariety.accentColor }}
           aria-hidden
         />
-        <span className="font-bold uppercase tracking-wider text-[11px] text-tea-900">
+        <span className="font-bold uppercase tracking-wider text-xs text-tea-900">
           Single-Origin Tasting Room
         </span>
         <span className="text-ink-mute" aria-hidden>·</span>
@@ -54,7 +54,7 @@ export function HeroContent({ activeVariety, onSelectVariety }: HeroContentProps
           <span className="font-bold uppercase tracking-wider text-tea-900">
             Select Harvest Profile
           </span>
-          <span className="text-[11px] text-ink-mute">
+          <span className="text-xs text-ink-mute">
             Live 3D liquid & aroma shift
           </span>
         </div>
@@ -109,7 +109,7 @@ export function HeroContent({ activeVariety, onSelectVariety }: HeroContentProps
               <Flame className="size-4" aria-hidden />
             </div>
             <div className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-ink-mute">
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-mute">
                 Water Temp
               </span>
               <AnimatePresence mode="wait">
@@ -133,7 +133,7 @@ export function HeroContent({ activeVariety, onSelectVariety }: HeroContentProps
               <Timer className="size-4" aria-hidden />
             </div>
             <div className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-ink-mute">
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-mute">
                 Infusion
               </span>
               <AnimatePresence mode="wait">
@@ -157,7 +157,7 @@ export function HeroContent({ activeVariety, onSelectVariety }: HeroContentProps
               <Award className="size-4" aria-hidden />
             </div>
             <div className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-ink-mute">
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-mute">
                 Score
               </span>
               <AnimatePresence mode="wait">
@@ -181,7 +181,7 @@ export function HeroContent({ activeVariety, onSelectVariety }: HeroContentProps
               <Sparkles className="size-4" aria-hidden />
             </div>
             <div className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-ink-mute">
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-mute">
                 Primary Note
               </span>
               <AnimatePresence mode="wait">
