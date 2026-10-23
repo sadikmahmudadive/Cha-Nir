@@ -1,35 +1,97 @@
+<div align="center">
+
+<img src="public/img/logo-full.webp" alt="Cha Nir — Pure · Organic · Deshi" width="260" />
+
 # Cha Nir
 
-Storefront for **Cha Nir**, packaged Bangladeshi tea sold wholesale and retail to tea stalls, shops, hotels, restaurants and homes.
+**Real Bangladeshi tea, packed for every cup.**
+*খাঁটি • জৈব • দেশি*
 
-Next.js (App Router) · TypeScript · Tailwind CSS v4 · Framer Motion.
+An e-commerce storefront for authentic packaged tea from Bangladesh's best gardens, sold wholesale and retail to tea stalls, shops, hotels, restaurants and homes.
+
+![Next.js](https://img.shields.io/badge/Next.js_16-302A23?style=flat-square&logo=nextdotjs&logoColor=F7F4E9)
+![TypeScript](https://img.shields.io/badge/TypeScript-536D3B?style=flat-square&logo=typescript&logoColor=F7F4E9)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_v4-536D3B?style=flat-square&logo=tailwindcss&logoColor=F7F4E9)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-A5BE16?style=flat-square&logo=framer&logoColor=302A23)
+
+</div>
+
+---
+
+## ✨ Highlights
+
+| | |
+|---|---|
+| 🍃 **Scroll story** | Five full-screen chapters, from garden to cup, driven by scroll progress with Framer Motion. |
+| 🏪 **Built for buyers** | Audience tabs for stalls, shops, hotels, restaurants and homes, each with a recommended pack and teas. |
+| 🛒 **Smart cart** | Slide-in drawer with persistent storage and a progress bar toward the next bulk discount. |
+| 📦 **Bulk pricing** | Basket weight unlocks 5% (10 kg), 8% (25 kg) and 12% (50 kg) off, applied automatically. |
+| 🤝 **Wholesale desk** | Tier table, how-it-works steps and a validated quote request form. |
+| ♿ **Accessible** | Visible labels, inline errors, keyboard-friendly tabs and dialogs, and reduced-motion support. |
+
+## 🗺️ Pages
+
+| Route | What it does |
+|---|---|
+| `/` | Hero, scroll story, audiences, best sellers, bulk tiers, FAQ |
+| `/shop` | Search, category and "best for" filters, sorting |
+| `/shop/[slug]` | Pack-size picker, quantity, brew guide, related teas |
+| `/wholesale` | Pricing tiers and quote request |
+| `/checkout` | Delivery form, cash on delivery, order summary |
+
+## 🚀 Getting started
 
 ```bash
 npm install
-npm run dev   # http://localhost:3000
-npm run build
+npm run dev      # http://localhost:3000
+npm run build    # production build
+npm run lint
 ```
 
-## Structure
+Optional: set `NEXT_PUBLIC_SITE_URL` so social-share links resolve to your domain.
 
-- `src/app` pages: `/`, `/shop`, `/shop/[slug]`, `/wholesale`, `/checkout`
-- `src/components/home` homepage sections (hero, scroll story, audiences, tiers, FAQ)
-- `src/lib/products.ts` catalogue, **placeholder prices in BDT**
-- `src/lib/pricing.ts` bulk-discount tiers, delivery fee and totals
-- `src/lib/cart.ts` cart store, persisted in `localStorage`
-- `public/img` optimised photos and logos
+## 🧱 Project structure
 
-## Placeholders to replace before launch
+```text
+src/
+├─ app/                 routes (home, shop, wholesale, checkout)
+├─ components/
+│  ├─ home/             hero, scroll story, audiences, tiers, FAQ
+│  └─ …                 header, footer, cart drawer, product card, form field
+└─ lib/
+   ├─ products.ts       catalogue (placeholder BDT prices)
+   ├─ pricing.ts        bulk tiers, delivery fee, totals
+   └─ cart.ts           cart store persisted in localStorage
+public/img/             optimised WebP logos and photos
+```
 
-- Prices, pack sizes, bulk tiers and delivery fee (`products.ts`, `pricing.ts`)
-- Product copy, tasting notes and FAQ answers
-- Contact details in the footer
-- Checkout and the wholesale quote form are **front-end only**: both have a `TODO` where the request should go to a backend
-- `NEXT_PUBLIC_SITE_URL` for social-share links
+## 🎨 Design system
 
-## Design tokens
+| Token | Hex | Use |
+|---|---|---|
+| ![](https://img.shields.io/badge/-%20-536D3B?style=flat-square) Tea Leaf Green | `#536D3B` | Primary brand colour |
+| ![](https://img.shields.io/badge/-%20-A5BE16?style=flat-square) Fresh Lime | `#A5BE16` | Accent and CTAs |
+| ![](https://img.shields.io/badge/-%20-F7F4E9?style=flat-square) Warm Cream | `#F7F4E9` | Page background |
+| ![](https://img.shields.io/badge/-%20-302A23?style=flat-square) Tea Brown | `#302A23` | Text and contrast |
 
-Tea Leaf Green `#536D3B`, Fresh Lime `#A5BE16`, Warm Cream `#F7F4E9`, Tea Brown `#302A23`.
-Derived: `leaf-deep #2F3F21`, `leaf-soft #E4EAD6`, `cream-2 #EFEBD9`.
-Lime is only used as a fill or with dark text; never as text on cream (fails contrast).
-Fonts: Lora (headings), Raleway (body, matches the logo tagline), Hind Siliguri (Bangla).
+Derived shades: `leaf-deep #2F3F21`, `leaf-soft #E4EAD6`, `cream-2 #EFEBD9`.
+Lime is used only as a fill or with dark text, never as text on cream, because it fails contrast there.
+
+**Type:** Lora for headings, Raleway for body (it matches the logo tagline) and Hind Siliguri for Bangla.
+
+## ⚠️ Before launch
+
+- [ ] Replace placeholder **prices, pack sizes, bulk tiers and delivery fee** (`products.ts`, `pricing.ts`)
+- [ ] Review product copy, tasting notes and **FAQ answers**
+- [ ] Add real **contact details** in the footer
+- [ ] Connect **checkout** and the **wholesale quote form** to a backend (each has a `TODO`; they are front-end only today)
+- [ ] Confirm the Modhumoti pack photo is yours to use as a product
+- [ ] Set `NEXT_PUBLIC_SITE_URL`
+
+---
+
+<div align="center">
+
+*Pure • Organic • Deshi*
+
+</div>
