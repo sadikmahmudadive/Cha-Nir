@@ -93,7 +93,7 @@ export function TeaHero() {
         >
           <div
             aria-hidden
-            className="absolute left-1/2 top-[52%] aspect-square w-[min(88%,100%)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(83,109,59,0.62),rgba(83,109,59,0.16)_62%,transparent)] max-lg:h-[96%] max-lg:w-auto lg:left-[64%] lg:w-[min(44rem,52vw)]"
+            className="absolute left-1/2 top-[52%] aspect-square w-[min(88%,100%)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-tea-100 max-lg:h-[96%] max-lg:w-auto lg:left-[64%] lg:w-[min(44rem,52vw)]"
           />
           <HeroFallback hidden={ready} />
 
@@ -120,7 +120,7 @@ export function TeaHero() {
               type="button"
               onClick={() => setPaused((p) => !p)}
               aria-pressed={paused}
-              className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full bg-white/10 px-4 text-sm font-semibold text-cream backdrop-blur hover:bg-white/20 lg:bottom-6 lg:right-[var(--gutter)]"
+              className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full bg-cream/85 px-4 text-sm font-semibold text-ink shadow-soft backdrop-blur hover:bg-white lg:bottom-6 lg:right-[var(--gutter)]"
             >
               {paused ? <Play className="size-4" aria-hidden /> : <Pause className="size-4" aria-hidden />}
               {paused ? "Play animation" : "Pause animation"}
@@ -128,7 +128,7 @@ export function TeaHero() {
           )}
 
           {scrolly && ready && (
-            <p className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-cream/80 backdrop-blur max-lg:hidden">
+            <p className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-cream/85 px-4 py-2 text-xs font-semibold text-ink-soft shadow-soft backdrop-blur max-lg:hidden">
               Scroll to pour
             </p>
           )}

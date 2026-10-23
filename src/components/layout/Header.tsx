@@ -17,13 +17,13 @@ import { formatBDT } from "@/lib/format";
 import { ease, stagger, fadeUp } from "@/lib/motion";
 import { site } from "@/lib/site";
 
-function CartButton({ night }: { night?: boolean }) {
+function CartButton() {
   const { count } = useCart();
   return (
     <button
       type="button"
       onClick={cartActions.open}
-      className={cn("tap relative grid cursor-pointer place-items-center rounded-full transition-colors", night ? "text-cream hover:bg-white/10" : "text-tea-900 hover:bg-tea-100")}
+      className="tap relative grid cursor-pointer place-items-center rounded-full text-tea-900 transition-colors hover:bg-tea-100"
       aria-label={`Open cart, ${count} ${count === 1 ? "item" : "items"}`}
     >
       <ShoppingBag className="size-[1.4rem]" aria-hidden />
@@ -136,7 +136,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", on);
   }, []);
 
-  const night = pathname === "/"; // the homepage is a dark, cinematic story
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
@@ -144,11 +143,7 @@ export function Header() {
       <header
         className={cn(
           "sticky top-0 z-50 transition-[background-color,box-shadow] duration-300",
-          night
-            ? cn("text-cream", scrolled ? "bg-night/90 shadow-[0_1px_0_rgb(255_255_255/0.08)] backdrop-blur-md" : "bg-night")
-            : scrolled
-              ? "bg-cream/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_-16px_rgb(48_42_35/0.25)] backdrop-blur-md"
-              : "bg-cream",
+          scrolled ? "bg-cream/95 shadow-[0_1px_0_var(--color-line),0_8px_24px_-16px_rgb(48_42_35/0.25)] backdrop-blur-md" : "bg-cream",
         )}
       >
         <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-4">
@@ -156,7 +151,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMenu(true)}
-              className={cn("tap -ml-2 grid cursor-pointer place-items-center rounded-full", night ? "hover:bg-white/10" : "hover:bg-tea-100")}
+              className="tap -ml-2 grid cursor-pointer place-items-center rounded-full hover:bg-tea-100"
               aria-label="Open menu"
               aria-haspopup="dialog"
             >
@@ -165,9 +160,7 @@ export function Header() {
           </div>
 
           <Link href="/" className="shrink-0 max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2" aria-label="Cha Nir home">
-            <span className={cn("inline-block", night && "rounded-full bg-cream px-3 py-0.5")}>
-              <Image src="/brand/logo.webp" alt="Cha Nir: Pure, Organic, Deshi" width={1768} height={1303} priority className={cn("w-auto max-w-none", night ? "h-[50px]" : "h-[58px]")} />
-            </span>
+            <Image src="/brand/logo.webp" alt="Cha Nir: Pure, Organic, Deshi" width={1768} height={1303} priority className="h-[58px] w-auto" />
           </Link>
 
           <nav aria-label="Primary" className="hidden lg:block">
@@ -178,9 +171,8 @@ export function Header() {
                     href={n.href}
                     aria-current={isActive(n.href) ? "page" : undefined}
                     className={cn(
-                      "relative inline-flex min-h-11 items-center rounded-full px-4 text-[0.95rem] font-semibold transition-colors",
-                      night ? "text-cream hover:bg-white/10" : "text-ink hover:bg-tea-100",
-                      isActive(n.href) && (night ? "text-lime-300" : "text-tea-700"),
+                      "relative inline-flex min-h-11 items-center rounded-full px-4 text-[0.95rem] font-semibold text-ink transition-colors hover:bg-tea-100",
+                      isActive(n.href) && "text-tea-700",
                     )}
                   >
                     {n.label}
@@ -197,7 +189,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setSearch(true)}
-              className={cn("tap grid cursor-pointer place-items-center rounded-full", night ? "hover:bg-white/10" : "hover:bg-tea-100")}
+              className="tap grid cursor-pointer place-items-center rounded-full hover:bg-tea-100"
               aria-label="Search"
               aria-haspopup="dialog"
             >
@@ -205,12 +197,12 @@ export function Header() {
             </button>
             <Link
               href={user ? "/account" : "/account/login"}
-              className={cn("tap hidden place-items-center rounded-full sm:grid", night ? "hover:bg-white/10" : "hover:bg-tea-100")}
+              className="tap hidden place-items-center rounded-full hover:bg-tea-100 sm:grid"
               aria-label={user ? `Account for ${user.name}` : "Log in or register"}
             >
               <User className="size-[1.35rem]" aria-hidden />
             </Link>
-            <CartButton night={night} />
+            <CartButton />
           </div>
         </div>
       </header>

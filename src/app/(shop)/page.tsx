@@ -6,14 +6,14 @@ import { StoryChapters } from "@/components/story/StoryChapters";
 import { TeaHero } from "@/components/three/tea/TeaHero";
 
 /**
- * Homepage = one continuous, dark, cinematic scroll story (GSAP + the 3D tea ritual),
+ * Homepage = a light 3D tea-ritual hero, then a dark cinematic GSAP scroll story,
  * then it lands on the cream "shop" half where browsing and buying stay plain and fast.
  */
 export default function HomePage() {
   return (
     <SmoothScroll>
+      <TeaHero />
       <div className="bg-night text-cream">
-        <TeaHero />
         <Manifesto />
         <StoryChapters />
         <CategoryReel />
