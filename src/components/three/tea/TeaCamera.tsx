@@ -3,7 +3,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, type MutableRefObject } from "react";
 import * as THREE from "three";
-import { cameraKey } from "./timeline";
+import { cameraKey, smooth } from "./timeline";
 
 const pos = new THREE.Vector3();
 const look = new THREE.Vector3();
@@ -11,7 +11,7 @@ const look = new THREE.Vector3();
 function place(camera: THREE.PerspectiveCamera, pointer: { x: number; y: number }, t: number, aspect: number, wide: boolean, dt: number) {
   cameraKey(t, pos, look);
   // distance compensation so the whole ritual fits narrow (portrait) viewports
-  const zoomOut = Math.max(0.88, 6.1 / (0.4986 * 12 * aspect));
+  const zoomOut = Math.max(0.88, 6.1 / (0.4986 * 12 * aspect)) * (1 + 0.3 * smooth(10.3, 12.2, t));
   pos.sub(look).multiplyScalar(zoomOut).add(look);
   // pan the composition right on wide layouts, leaving headline space on the left
   const shift = wide ? 2.3 * Math.min(1.25, aspect / 1.75) : 0;

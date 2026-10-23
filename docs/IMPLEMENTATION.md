@@ -84,6 +84,9 @@ A real-time scene: a Cha Nir carton opens, loose leaves pour into a glass of hot
 ## Homepage story (GSAP)
 The homepage is a dark, cinematic scroll story followed by a cream "shop" half. `src/components/story/`: `SmoothScroll` (Lenis on GSAP's ticker; disabled for reduced motion), `Manifesto` (pinned, words light up with scroll), `StoryChapters` (pinned four-chapter wipe: sourcing → processing → packaging → sharing, using the placeholder illustrations, labelled illustrative), `CategoryReel` (pinned horizontal reel on desktop, native swipe on phones). The 3D tea ritual hero opens the story. All ScrollTriggers live in `gsap.matchMedia()` so `prefers-reduced-motion` gets a plain stacked layout. Replace the `ArtImage` stills with real photography/film frames when available (no generated video is used).
 
+## Hero scroll story: pour, brew, sip
+The scroll timeline (`timeline.ts`, `T_SIP_END` = 16.2 s) now continues after the ritual: the camera pulls back, a stylised elder (`TeaElder.tsx`, primitives only, white beard and skullcap) appears behind a timber table (`TeaTable.tsx`), reaches for the glass with two-bone IK arms, and lifts it to sip (eyes close, head tips back). `CupRig.tsx` carries glass, tea, floating leaves and steam together as one rigid body while it is lifted. Posters in `public/hero/` are frames at `T_POSTER` (15.8 s). `HeroNature.tsx` adds the sun-wash, grain and slowly swaying branch shadows behind the hero.
+
 ## Accessibility
 Skip link, landmarks, semantic heading order, labelled controls with inline errors (`aria-invalid`, `aria-describedby`, `role=alert`), focus moved to the first error / step heading, `Sheet` = `role=dialog` + focus trap + Escape + scroll lock + focus return, `aria-live` cart announcements, 44px+ targets, visible focus ring, `aria-current` navigation, status never conveyed by colour alone, reduced-motion support, decorative 3D/SVG is `aria-hidden` with a text alternative on the container.
 

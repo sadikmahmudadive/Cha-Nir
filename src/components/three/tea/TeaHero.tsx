@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { useCapability, useHasFinePointer, usePrefersReducedMotion } from "../capability";
 import { HeroContent } from "./HeroContent";
 import { HeroFallback } from "./HeroFallback";
+import { HeroNature } from "./HeroNature";
 import { HeroSensoryBadges } from "./HeroSensoryBadges";
 import { TEA_VARIETIES, type TeaVariety } from "./varieties";
 
@@ -74,13 +75,14 @@ export function TeaHero() {
     <section
       ref={wrap}
       aria-labelledby="hero-title"
-      className={cn("relative isolate", scrolly ? "h-[340svh]" : "overflow-hidden")}
+      className={cn("relative isolate", scrolly ? "h-[460svh]" : "overflow-hidden")}
     >
       <div
         className={cn(
-          scrolly && "sticky top-[var(--header-h)] flex h-[calc(100svh-var(--header-h))] flex-col overflow-hidden lg:block",
+          scrolly ? "sticky top-[var(--header-h)] flex h-[calc(100svh-var(--header-h))] flex-col overflow-hidden lg:block" : "relative",
         )}
       >
+        <HeroNature />
         {/* Text column (real HTML, above the stage on every breakpoint) */}
         <div className={cn("container-x relative z-10 lg:flex lg:items-center", scrolly ? "lg:h-full" : "lg:min-h-[min(46rem,calc(100svh-7.5rem))]")}>
           <HeroContent activeVariety={activeVariety} onSelectVariety={setActiveVariety} />
@@ -143,7 +145,7 @@ export function TeaHero() {
 
           {scrolly && ready && (
             <p className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-cream/85 px-4 py-2 text-xs font-semibold text-ink-soft shadow-soft backdrop-blur max-lg:hidden">
-              Scroll to pour
+              Scroll: pour, brew, sip
             </p>
           )}
         </div>

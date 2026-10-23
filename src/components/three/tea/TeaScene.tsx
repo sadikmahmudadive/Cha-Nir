@@ -9,7 +9,10 @@ import { TeaLeafSystem } from "./TeaLeafSystem";
 import { TeaLighting } from "./TeaLighting";
 import { TeaLiquid } from "./TeaLiquid";
 import { TeaSteamSystem } from "./TeaSteamSystem";
-import { LOOP, T_FINAL, loopOpacity, makeLeafPlans } from "./timeline";
+import { LOOP, T_SIP_END, loopOpacity, makeLeafPlans } from "./timeline";
+import { CupRig } from "./CupRig";
+import { TeaElder } from "./TeaElder";
+import { TeaTable } from "./TeaTable";
 import { TEA_VARIETIES, type TeaVariety } from "./varieties";
 import * as THREE from "three";
 
@@ -56,7 +59,7 @@ function Director({
     if (fixedT !== undefined) tRef.current = fixedT;
     else if (scrollRef) {
       // scrub: ease the shared clock toward the scroll position (smooth in both directions)
-      tRef.current = THREE.MathUtils.damp(tRef.current, scrollRef.current * T_FINAL, 7, Math.min(delta, 0.1));
+      tRef.current = THREE.MathUtils.damp(tRef.current, scrollRef.current * T_SIP_END, 7, Math.min(delta, 0.1));
     }
     else if (!scrollRef && startedRef.current && !pausedRef.current) tRef.current = (tRef.current + Math.min(delta, 0.1)) % LOOP;
     const el = fadeRef.current;
@@ -134,10 +137,14 @@ export default function TeaScene({
         <TeaCamera tRef={tRef} pointerEnabled={pointerEnabled} wide={wide} />
         <TeaLighting tRef={tRef} animate={animate && !off.has("shadow")} lowPower={lowPower} debugOff={off} />
         {!off.has("box") && <TeaBox tRef={tRef} />}
-        {!off.has("glass") && <TeaGlass />}
-        {!off.has("liquid") && <TeaLiquid tRef={tRef} plans={heroPlans} steps={lowPower ? 3 : 4} variety={variety ?? TEA_VARIETIES[0]} />}
-        {!off.has("leaves") && <TeaLeafSystem tRef={tRef} heroPlans={heroPlans} smallPlans={smallPlans} />}
-        {!off.has("steam") && <TeaSteamSystem tRef={tRef} ribbons={lowPower ? 2 : 4} pointerEnabled={pointerEnabled} />}
+        <TeaTable />
+        <TeaElder tRef={tRef} />
+        <CupRig tRef={tRef}>
+          {!off.has("glass") && <TeaGlass />}
+          {!off.has("liquid") && <TeaLiquid tRef={tRef} plans={heroPlans} steps={lowPower ? 3 : 4} variety={variety ?? TEA_VARIETIES[0]} />}
+          {!off.has("leaves") && <TeaLeafSystem tRef={tRef} heroPlans={heroPlans} smallPlans={smallPlans} />}
+          {!off.has("steam") && <TeaSteamSystem tRef={tRef} ribbons={lowPower ? 2 : 4} pointerEnabled={pointerEnabled} />}
+        </CupRig>
         <Ready
           onReady={() => {
             startedRef.current = true;

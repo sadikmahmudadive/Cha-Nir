@@ -36,6 +36,10 @@ export const T = {
 export const LOOP = 12.6;
 /** A representative "final composition" moment, used for posters and reduced motion. */
 export const T_FINAL = 10.2;
+/** The scroll story continues past the ritual: an elder sips the tea. */
+export const T_SIP_END = 16.2;
+/** Frame used for posters / reduced-motion: mid-sip. */
+export const T_POSTER = 15.8;
 
 export const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 export const smooth = (a: number, b: number, t: number) => {
@@ -273,7 +277,10 @@ const KEYS: Key[] = [
   { t: 4.8, pos: [0.85, 3.5, 13.1], look: [0.65, 2.05, 0] },
   { t: 7.0, pos: [0.8, 3.0, 12.4], look: [0.5, 1.8, 0] },
   { t: 9.0, pos: [0.65, 2.8, 12.0], look: [0.4, 1.7, 0] },
-  { t: 12.6, pos: [0.65, 2.8, 12.0], look: [0.4, 1.7, 0] },
+  { t: 10.2, pos: [0.65, 2.8, 12.0], look: [0.4, 1.7, 0] },
+  // pull back and up: the elder is revealed behind the table
+  { t: 12.0, pos: [1.0, 4.4, 17.2], look: [1.0, 2.9, -0.8] },
+  { t: T_SIP_END, pos: [1.1, 4.2, 16.4], look: [1.1, 3.0, -0.8] },
 ];
 
 export function cameraKey(t: number, outPos: THREE.Vector3, outLook: THREE.Vector3) {
@@ -285,3 +292,42 @@ export function cameraKey(t: number, outPos: THREE.Vector3, outLook: THREE.Vecto
   outPos.set(lerp(a.pos[0], b.pos[0], k), lerp(a.pos[1], b.pos[1], k), lerp(a.pos[2], b.pos[2], k));
   outLook.set(lerp(a.look[0], b.look[0], k), lerp(a.look[1], b.look[1], k), lerp(a.look[2], b.look[2], k));
 }
+
+/* ── the elder and the sip ────────────────────────────────────── */
+export const MAN = { x: CUP.x, z: -2.35 };
+export const manAppear = (t: number) => smooth(10.3, 11.7, t);
+
+/** Cup pivot at rest (middle of the glass). */
+export const CUP_PIVOT = new THREE.Vector3(CUP.x, CUP.height * 0.5, CUP.z);
+const MOUTH_PIVOT = new THREE.Vector3(CUP.x, 3.2, MAN.z + 1.4);
+const SIP_TILT = THREE.MathUtils.degToRad(30);
+
+export function sipState(t: number) {
+  const reach = smooth(11.8, 12.8, t);
+  const lift = smooth(12.8, 14.7, t);
+  const tilt = smooth(14.1, 15.2, t) * SIP_TILT;
+  const sipping = smooth(14.6, 15.2, t);
+  return { reach, lift, tilt, sipping };
+}
+
+/** World-space offset of the cup pivot from rest and the tilt (about X, rim toward the elder). */
+export function cupPose(t: number) {
+  const { lift, tilt } = sipState(t);
+  const e = lift * lift * (3 - 2 * lift);
+  const arc = Math.sin(Math.PI * e) * 0.55;
+  const pos = new THREE.Vector3().lerpVectors(CUP_PIVOT, MOUTH_PIVOT, e);
+  pos.z += arc;
+  return { pos, tilt };
+}
+
+const GRIP_LOCAL = new THREE.Vector3(-0.76, 0.12, 0);
+const HAND_REST = new THREE.Vector3(CUP.x - 1.55, 0.5, MAN.z + 1.0);
+
+/** World position of the gripping hand. */
+export function handPosition(t: number, out = new THREE.Vector3()) {
+  const { reach } = sipState(t);
+  const { pos, tilt } = cupPose(t);
+  const grip = GRIP_LOCAL.clone().applyAxisAngle(new THREE.Vector3(1, 0, 0), -tilt).add(pos);
+  return out.lerpVectors(HAND_REST, grip, reach * reach * (3 - 2 * reach));
+}
+export const HAND_REST_LEFT = new THREE.Vector3(CUP.x + 1.55, 0.5, MAN.z + 1.0);

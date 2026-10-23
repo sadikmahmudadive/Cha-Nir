@@ -231,3 +231,12 @@ body {
     animation: none;
   }
 }
+
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(var(--sway-from, 0deg)) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: rotate(calc(var(--sway-from, 0deg) + 1.6deg)) translate3d(0, 6px, 0);
+  }
+}
