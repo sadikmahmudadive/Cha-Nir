@@ -9,7 +9,7 @@ import { press } from "@/lib/motion";
 
 const MotionLink = motion.create(Link);
 
-export type ButtonVariant = "primary" | "accent" | "secondary" | "ghost" | "light" | "danger";
+export type ButtonVariant = "primary" | "accent" | "secondary" | "ghost" | "light" | "danger" | "outlineLight";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const variants: Record<ButtonVariant, string> = {
@@ -19,6 +19,7 @@ const variants: Record<ButtonVariant, string> = {
   ghost: "text-ink hover:bg-tea-100",
   light: "bg-cream text-tea-800 hover:bg-white shadow-soft",
   danger: "bg-danger text-white hover:bg-[#8f1d17]",
+  outlineLight: "border border-cream/45 text-cream hover:bg-white/10",
 };
 
 const sizes: Record<ButtonSize, string> = {

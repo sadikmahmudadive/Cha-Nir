@@ -46,7 +46,6 @@ Principles: HTML owns all text, CTAs, prices and forms. 3D is a layered enhancem
 | Piece | Files | Behaviour |
 |---|---|---|
 | Hero: tea ritual | `three/tea/*` | Photoreal-style 9-12 s story loop. See "Tea ritual hero" below. |
-| Tea journey | `three/TeaJourney.tsx`, `JourneyScene.tsx` | Sticky canvas on `lg+` only; page scroll progress (Motion `useScroll`) drives a camera path across 4 illustrative stages. Never locks scroll. Phones/low-end get the equivalent image-led 4-step layout. Labelled "illustrative, not footage of Cha Nir's facilities". |
 | Product viewer | `three/ProductViewer.tsx`, `ViewerScene.tsx` | Opt-in ("View in 3D") so nothing downloads unless asked. Drag-rotate (horizontal; vertical scroll preserved on touch), button zoom (no wheel capture), reset, variant-size scaling, loading + error boundary + static image fallback. |
 
 Test hooks: `?3d=off` forces the fallback, `?3d=on` skips device heuristics.
@@ -81,6 +80,9 @@ A real-time scene: a Cha Nir carton opens, loose leaves pour into a glass of hot
 **Adding an approved model:** export a GLB (Draco/Meshopt + KTX2 textures, < ~1.5 MB, < 30k tris), place it in `public/models/` or Cloudinary raw, set `viewer: { modelUrl: "/models/pack.glb" }` on the product. `ViewerScene` already loads it with `useGLTF`; add `useGLTF.preload` for above-the-fold use. Use `gltf-transform optimize` in the pipeline. Dispose of custom textures you create manually.
 
 **Performance checklist:** no real-time shadows or post-processing; ≤ 64 lathe segments; shared geometry/materials; one animation loop per canvas (the rig owns the camera); off-screen pause; verify on a mid-range Android phone with `?3d=on` and Chrome remote debugging, and watch INP/LCP with Lighthouse.
+
+## Homepage story (GSAP)
+The homepage is a dark, cinematic scroll story followed by a cream "shop" half. `src/components/story/`: `SmoothScroll` (Lenis on GSAP's ticker; disabled for reduced motion), `Manifesto` (pinned, words light up with scroll), `StoryChapters` (pinned four-chapter wipe: sourcing → processing → packaging → sharing, using the placeholder illustrations, labelled illustrative), `CategoryReel` (pinned horizontal reel on desktop, native swipe on phones). The 3D tea ritual hero opens the story. All ScrollTriggers live in `gsap.matchMedia()` so `prefers-reduced-motion` gets a plain stacked layout. Replace the `ArtImage` stills with real photography/film frames when available (no generated video is used).
 
 ## Accessibility
 Skip link, landmarks, semantic heading order, labelled controls with inline errors (`aria-invalid`, `aria-describedby`, `role=alert`), focus moved to the first error / step heading, `Sheet` = `role=dialog` + focus trap + Escape + scroll lock + focus return, `aria-live` cart announcements, 44px+ targets, visible focus ring, `aria-current` navigation, status never conveyed by colour alone, reduced-motion support, decorative 3D/SVG is `aria-hidden` with a text alternative on the container.
