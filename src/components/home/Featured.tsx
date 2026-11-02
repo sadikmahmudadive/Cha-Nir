@@ -42,7 +42,7 @@ export function Featured() {
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 0.08}>
+            <Reveal key={p.slug} delay={i * 0.08} className="h-full flex flex-col">
               <ProductCard product={p} />
             </Reveal>
           ))}
