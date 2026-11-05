@@ -97,7 +97,7 @@ function Chapter({
           sizes="100vw"
           className="object-cover"
           style={{ objectPosition: c.pos }}
-          priority={first}
+          loading={first ? "eager" : undefined}
         />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-t from-leaf-deep/95 via-leaf-deep/45 to-leaf-deep/10 lg:bg-gradient-to-r lg:from-leaf-deep/90 lg:via-leaf-deep/40 lg:to-transparent" />

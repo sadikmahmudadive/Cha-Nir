@@ -32,25 +32,12 @@ export function Hero() {
 
       <div className="container-x relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
         <motion.div style={{ y: textY }} className="max-w-2xl">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="inline-flex items-center gap-3 whitespace-nowrap rounded-full border border-leaf/25 bg-[#fffdf6] px-4 py-2 text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-leaf"
-          >
-            <span className="size-2 rounded-full bg-lime" aria-hidden />
-            Pure • Organic • Deshi
-            <span className="hidden font-bn font-semibold normal-case tracking-normal text-brown-soft sm:inline">
-              খাঁটি • জৈব • দেশি
-            </span>
-          </motion.p>
-
           <SplitHeading
             as="h1"
             delay={0.15}
             text="Real Bangladeshi tea, packed for every cup."
             accent={["Bangladeshi"]}
-            className="mt-6 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.4rem]"
+            className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.4rem]"
           />
 
           <motion.p
@@ -113,7 +100,8 @@ export function Hero() {
                 src="/img/picker.webp"
                 alt="A tea picker in a conical hat plucking young leaf on a sunlit Bangladeshi hillside"
                 fill
-                priority
+                loading="eager"
+                fetchPriority="high"
                 sizes="(min-width: 1024px) 40vw, 90vw"
                 className="object-cover"
                 style={{ objectPosition: "58% 50%" }}

@@ -51,7 +51,7 @@ export function Header() {
             alt="Cha Nir, pure organic deshi tea"
             width={900}
             height={659}
-            priority
+            loading="eager"
             className={`w-auto transition-[height] duration-300 ${scrolled ? "h-12" : "h-16"}`}
           />
         </Link>

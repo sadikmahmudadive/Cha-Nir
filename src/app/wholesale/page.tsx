@@ -50,7 +50,7 @@ export default function WholesalePage() {
               src="/img/factory-withering.webp"
               alt="Troughs of freshly plucked leaf withering in our tea factory"
               fill
-              priority
+              loading="eager"
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"
             />

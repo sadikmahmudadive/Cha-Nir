@@ -52,7 +52,7 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
                 src={product.image}
                 alt={product.imageAlt}
                 fill
-                priority
+                loading="eager"
                 sizes="(min-width: 1024px) 55vw, 100vw"
                 className="object-cover"
                 style={{ objectPosition: product.focus }}

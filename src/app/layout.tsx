@@ -49,9 +49,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${lora.variable} ${raleway.variable} ${bengali.variable}`}
     >
-      <body className="flex min-h-dvh flex-col">
+      <body suppressHydrationWarning className="flex min-h-dvh flex-col">
         <Providers>
           <a
             href="#main"
