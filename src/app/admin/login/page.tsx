@@ -12,10 +12,8 @@ import {
   Flame,
   Lock,
   Mail,
-  ShieldCheck,
-  Sparkles,
 } from "lucide-react";
-import { useAdminAuth, DEFAULT_SUPERADMIN } from "@/lib/firebase/admin-auth";
+import { useAdminAuth } from "@/lib/firebase/admin-auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -44,12 +42,6 @@ export default function AdminLoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFillSuperAdmin = () => {
-    setEmail(DEFAULT_SUPERADMIN.email);
-    setPassword(DEFAULT_SUPERADMIN.password);
-    setError(null);
   };
 
   return (
@@ -89,31 +81,6 @@ export default function AdminLoginPage() {
 
         {/* Card */}
         <div className="mt-8 rounded-3xl border border-black/[0.08] bg-white/90 backdrop-blur-md p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] space-y-6">
-          {/* Superadmin Credentials Quick-Fill Banner */}
-          <div className="rounded-2xl border border-leaf/25 bg-linear-to-br from-[#ffffff] via-[#f8faf2] to-[#ecf2df] p-3.5 text-xs">
-            <div className="flex items-start justify-between gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-1.5 font-bold text-leaf-deep">
-                  <ShieldCheck className="size-4 text-leaf" />
-                  <span>Configured Superadmin</span>
-                </div>
-                <p className="text-[0.72rem] text-brown-soft leading-relaxed font-mono">
-                  {DEFAULT_SUPERADMIN.email}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleFillSuperAdmin}
-                className="btn btn-leaf text-[0.68rem] font-bold px-2.5 py-1.5 rounded-lg shadow-2xs hover:shadow-xs transition-all shrink-0 flex items-center gap-1"
-                title="Autofill Super Admin credentials"
-              >
-                <Sparkles className="size-3" />
-                <span>Autofill</span>
-              </button>
-            </div>
-          </div>
-
           {/* Error notice */}
           {error && (
             <div className="rounded-xl border border-rose-500/25 bg-rose-500/10 p-3.5 text-xs text-rose-800 flex items-start gap-2.5 animate-in fade-in">
@@ -139,7 +106,7 @@ export default function AdminLoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="chanir@gmail.com"
+                  placeholder="admin@chanir.com"
                   autoComplete="email"
                   className="w-full rounded-xl border border-black/[0.1] bg-white pl-10 pr-4 py-2.5 text-xs text-brown focus:border-leaf focus:outline-hidden focus:ring-2 focus:ring-leaf/20 transition-all font-mono"
                 />
@@ -154,9 +121,6 @@ export default function AdminLoginPage() {
                 >
                   Password
                 </label>
-                <span className="text-[0.65rem] text-brown-soft">
-                  Default: <code className="font-mono text-leaf-deep font-bold">admin#chanir@1257</code>
-                </span>
               </div>
               <div className="relative">
                 <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-brown-soft" />

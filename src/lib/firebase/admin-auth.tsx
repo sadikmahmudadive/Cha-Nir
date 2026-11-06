@@ -283,65 +283,98 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       const email = emailInput.trim().toLowerCase();
       const password = passwordInput.trim();
 
-      // A. Try Live Firebase Auth if available
+      // A. Try Live Firebase Auth & Firestore flow
       if (isFirebaseConfigured && auth && db) {
         try {
-          let fbUser;
+          let fbUser = null;
+
           try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             fbUser = userCredential.user;
           } catch (signInErr: unknown) {
-            // If superadmin account hasn't been created in Firebase Auth yet, try creating it
+            const errCode = (signInErr as { code?: string })?.code || "";
+
+            // If user account hasn't been created in Firebase Auth yet, automatically create it
             const isSuper = email === DEFAULT_SUPERADMIN.email.toLowerCase() && password === DEFAULT_SUPERADMIN.password;
-            if (isSuper) {
+            if (
+              isSuper ||
+              errCode === "auth/user-not-found" ||
+              errCode === "auth/invalid-credential" ||
+              errCode === "auth/invalid-login-credentials"
+            ) {
               try {
                 const createCred = await createUserWithEmailAndPassword(auth, email, password);
                 fbUser = createCred.user;
-              } catch (createErr) {
-                console.warn("Auto-create superadmin in Firebase Auth skipped or failed:", createErr);
+              } catch (createErr: unknown) {
+                const createCode = (createErr as { code?: string })?.code || "";
+                if (createCode === "auth/email-already-in-use") {
+                  return { success: false, error: "Incorrect password for this registered admin account." };
+                } else if (createCode === "auth/operation-not-allowed") {
+                  console.warn("Firebase Auth Email/Password provider not enabled in Firebase Console.");
+                } else {
+                  console.warn("Auto-create in Firebase Auth skipped or failed:", createErr);
+                }
               }
             }
-            if (!fbUser) {
-              throw signInErr;
+
+            if (!fbUser && errCode === "auth/wrong-password") {
+              return { success: false, error: "Incorrect password. Please verify your credentials." };
             }
           }
 
-          // Fetch admin role document from Firestore collection "admins"
-          const docRef = doc(db, "admins", fbUser.uid);
-          let docSnap = await getDoc(docRef);
+          if (fbUser) {
+            // Persist & read admin role document in Firestore collection "admins"
+            const docRef = doc(db, "admins", fbUser.uid);
+            const docSnap = await getDoc(docRef);
 
-          if (!docSnap.exists()) {
-            // Check if superadmin
             const isSuper = email === DEFAULT_SUPERADMIN.email.toLowerCase();
-            const newAdmin: AdminUser = {
-              uid: fbUser.uid,
-              email: fbUser.email || email,
-              displayName: fbUser.displayName || (isSuper ? DEFAULT_SUPERADMIN.displayName : "Admin User"),
-              role: isSuper ? "super_admin" : "admin",
-              status: "active",
-              createdAt: new Date().toISOString(),
-              lastLoginAt: new Date().toISOString(),
-            };
-            await setDoc(docRef, newAdmin);
-            docSnap = await getDoc(docRef);
+            let adminData: AdminUser;
+
+            if (!docSnap.exists()) {
+              adminData = {
+                uid: fbUser.uid,
+                email: fbUser.email || email,
+                displayName: fbUser.displayName || (isSuper ? DEFAULT_SUPERADMIN.displayName : "Admin User"),
+                role: isSuper ? "super_admin" : "admin",
+                status: "active",
+                createdAt: new Date().toISOString(),
+                lastLoginAt: new Date().toISOString(),
+              };
+              // Persist directly to live Firestore
+              await setDoc(docRef, adminData, { merge: true });
+            } else {
+              adminData = docSnap.data() as AdminUser;
+              if (adminData.status === "suspended") {
+                await firebaseSignOut(auth);
+                return { success: false, error: "This admin account has been suspended. Contact the Super Admin." };
+              }
+
+              // Update lastLoginAt in Firestore
+              await updateDoc(docRef, {
+                lastLoginAt: new Date().toISOString(),
+                email: fbUser.email || email,
+              });
+              adminData.lastLoginAt = new Date().toISOString();
+            }
+
+            const activeUser: AdminUser = { ...adminData, uid: fbUser.uid };
+            setUser(activeUser);
+            window.localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(activeUser));
+
+            // Sync with local team list
+            const currentList = getLocalAdmins();
+            const filtered = currentList.filter(
+              (u) => u.uid !== activeUser.uid && u.email.toLowerCase() !== activeUser.email.toLowerCase()
+            );
+            const updatedTeam = [activeUser, ...filtered];
+            setTeamMembers(updatedTeam);
+            saveLocalAdmins(updatedTeam);
+
+            return { success: true };
           }
-
-          const adminData = docSnap.data() as AdminUser;
-          if (adminData.status === "suspended") {
-            await firebaseSignOut(auth);
-            return { success: false, error: "This admin account has been suspended. Contact the Super Admin." };
-          }
-
-          // Update lastLoginAt in Firestore
-          await updateDoc(docRef, { lastLoginAt: new Date().toISOString() });
-          const activeUser: AdminUser = { ...adminData, uid: fbUser.uid, lastLoginAt: new Date().toISOString() };
-
-          setUser(activeUser);
-          window.localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(activeUser));
-          return { success: true };
         } catch (fbErr: unknown) {
           const errMessage = fbErr instanceof Error ? fbErr.message : "Firebase authentication failed";
-          console.warn("Firebase Auth error, checking local store fallback:", errMessage);
+          console.warn("Firebase Auth / Firestore error, checking local store fallback:", errMessage);
         }
       }
 
@@ -391,6 +424,16 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         ...matched,
         lastLoginAt: new Date().toISOString(),
       };
+
+      // Always persist to Firestore if db is available
+      if (isFirebaseConfigured && db) {
+        try {
+          const docRef = doc(db, "admins", updatedUser.uid);
+          await setDoc(docRef, updatedUser, { merge: true });
+        } catch (firestoreErr) {
+          console.warn("Could not write fallback user to Firestore:", firestoreErr);
+        }
+      }
 
       const nextList = currentAdmins.map((u) => (u.uid === updatedUser.uid ? updatedUser : u));
       setTeamMembers(nextList);
