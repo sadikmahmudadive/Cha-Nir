@@ -194,8 +194,16 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isFirebaseConfigured || !auth || !db) return;
 
+    let unsubscribeSnapshot: (() => void) | null = null;
+
     // Listen to Firebase Auth state
     const unsubscribeAuth = onAuthStateChanged(auth, async (fbUser) => {
+      // Clean up previous snapshot listener if any
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
       if (fbUser && fbUser.email) {
         try {
           const docRef = doc(db!, "admins", fbUser.uid);
@@ -222,58 +230,67 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
               createdAt: new Date().toISOString(),
               lastLoginAt: new Date().toISOString(),
             };
-            await setDoc(docRef, newDoc);
+            try {
+              await setDoc(docRef, newDoc);
+            } catch (writeErr) {
+              console.warn("Could not write initial admin profile to Firestore (check security rules):", writeErr);
+            }
             setUser(newDoc);
             window.localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(newDoc));
           }
         } catch (err) {
-          console.warn("Error reading admin profile from Firestore:", err);
+          console.warn("Could not read admin profile from Firestore (check security rules):", err);
+        }
+
+        // Attach snapshot listener ONLY when user is authenticated
+        try {
+          const colRef = collection(db!, "admins");
+          unsubscribeSnapshot = onSnapshot(
+            colRef,
+            (snapshot) => {
+              const loaded: AdminUser[] = [];
+              snapshot.forEach((snapDoc) => {
+                const item = snapDoc.data() as AdminUser;
+                loaded.push({ ...item, uid: snapDoc.id });
+              });
+
+              if (loaded.length > 0) {
+                setTeamMembers(loaded);
+                saveLocalAdmins(loaded);
+
+                // Update current user if their role/status changed in Firestore
+                setUser((prev) => {
+                  if (!prev) return null;
+                  const updated = loaded.find(
+                    (u) => u.uid === prev.uid || u.email.toLowerCase() === prev.email.toLowerCase()
+                  );
+                  if (updated) {
+                    if (updated.status === "suspended") {
+                      window.localStorage.removeItem(STORAGE_SESSION_KEY);
+                      return null;
+                    }
+                    window.localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(updated));
+                    return updated;
+                  }
+                  return prev;
+                });
+              }
+            },
+            (err) => {
+              console.warn("Firestore snapshot listener permission error. Please verify Firestore security rules:", err.message);
+            }
+          );
+        } catch (snapErr) {
+          console.warn("Could not attach Firestore snapshot listener:", snapErr);
         }
       }
     });
 
-    // Real-time snapshot listener on the "admins" collection
-    // When the user edits a role directly in the Firestore console, this triggers immediately!
-    const colRef = collection(db, "admins");
-    const unsubscribeSnapshot = onSnapshot(
-      colRef,
-      (snapshot) => {
-        const loaded: AdminUser[] = [];
-        snapshot.forEach((snapDoc) => {
-          const item = snapDoc.data() as AdminUser;
-          loaded.push({ ...item, uid: snapDoc.id });
-        });
-
-        if (loaded.length > 0) {
-          setTeamMembers(loaded);
-          saveLocalAdmins(loaded);
-
-          // Update current user if their role/status changed in Firestore
-          setUser((prev) => {
-            if (!prev) return null;
-            const updated = loaded.find(
-              (u) => u.uid === prev.uid || u.email.toLowerCase() === prev.email.toLowerCase()
-            );
-            if (updated) {
-              if (updated.status === "suspended") {
-                window.localStorage.removeItem(STORAGE_SESSION_KEY);
-                return null;
-              }
-              window.localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(updated));
-              return updated;
-            }
-            return prev;
-          });
-        }
-      },
-      (err) => {
-        console.warn("Firestore onSnapshot error:", err);
-      }
-    );
-
     return () => {
       unsubscribeAuth();
-      unsubscribeSnapshot();
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+      }
     };
   }, []);
 
@@ -323,38 +340,41 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
           }
 
           if (fbUser) {
-            // Persist & read admin role document in Firestore collection "admins"
-            const docRef = doc(db, "admins", fbUser.uid);
-            const docSnap = await getDoc(docRef);
-
             const isSuper = email === DEFAULT_SUPERADMIN.email.toLowerCase();
-            let adminData: AdminUser;
+            let adminData: AdminUser = {
+              uid: fbUser.uid,
+              email: fbUser.email || email,
+              displayName: fbUser.displayName || (isSuper ? DEFAULT_SUPERADMIN.displayName : "Admin User"),
+              role: isSuper ? "super_admin" : "admin",
+              status: "active",
+              createdAt: new Date().toISOString(),
+              lastLoginAt: new Date().toISOString(),
+            };
 
-            if (!docSnap.exists()) {
-              adminData = {
-                uid: fbUser.uid,
-                email: fbUser.email || email,
-                displayName: fbUser.displayName || (isSuper ? DEFAULT_SUPERADMIN.displayName : "Admin User"),
-                role: isSuper ? "super_admin" : "admin",
-                status: "active",
-                createdAt: new Date().toISOString(),
-                lastLoginAt: new Date().toISOString(),
-              };
-              // Persist directly to live Firestore
-              await setDoc(docRef, adminData, { merge: true });
-            } else {
-              adminData = docSnap.data() as AdminUser;
-              if (adminData.status === "suspended") {
-                await firebaseSignOut(auth);
-                return { success: false, error: "This admin account has been suspended. Contact the Super Admin." };
+            // Attempt write/read in Firestore
+            try {
+              const docRef = doc(db, "admins", fbUser.uid);
+              const docSnap = await getDoc(docRef);
+
+              if (!docSnap.exists()) {
+                await setDoc(docRef, adminData, { merge: true });
+              } else {
+                const existing = docSnap.data() as AdminUser;
+                if (existing.status === "suspended") {
+                  await firebaseSignOut(auth);
+                  return { success: false, error: "This admin account has been suspended. Contact the Super Admin." };
+                }
+                adminData = { ...existing, lastLoginAt: new Date().toISOString() };
+                await updateDoc(docRef, {
+                  lastLoginAt: new Date().toISOString(),
+                  email: fbUser.email || email,
+                });
               }
-
-              // Update lastLoginAt in Firestore
-              await updateDoc(docRef, {
-                lastLoginAt: new Date().toISOString(),
-                email: fbUser.email || email,
-              });
-              adminData.lastLoginAt = new Date().toISOString();
+            } catch (firestoreErr) {
+              console.warn(
+                "Notice: Firestore read/write blocked by security rules. Update Firestore rules in Firebase Console to allow read/write:",
+                firestoreErr
+              );
             }
 
             const activeUser: AdminUser = { ...adminData, uid: fbUser.uid };

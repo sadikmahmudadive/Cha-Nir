@@ -1,0 +1,92 @@
+rules_version = '2';
+
+// Security rules for Cha Nir with Admin OS & Firestore RBAC support
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { 
+      return request.auth != null; 
+    }
+    
+    function isSuperAdmin() {
+      return signedIn() && (
+        request.auth.token.email == 'chanir@gmail.com' ||
+        request.auth.token.admin == true
+      );
+    }
+
+    function isAdmin() { 
+      return signedIn() && (
+        isSuperAdmin() || 
+        request.auth.token.admin == true
+      ); 
+    }
+
+    function isOwner(uid) { 
+      return signedIn() && request.auth.uid == uid; 
+    }
+
+    // -------------------------------------------------------------------------
+    // Admin & Staff Accounts (RBAC)
+    // -------------------------------------------------------------------------
+    match /admins/{adminId} {
+      // Allows authenticated staff (like chanir@gmail.com) to read and write admin profiles
+      allow read, write: if signedIn();
+    }
+
+    // -------------------------------------------------------------------------
+    // Public storefront catalog data
+    // -------------------------------------------------------------------------
+    match /products/{id}   { allow read: if true; allow write: if signedIn(); }
+    match /categories/{id} { allow read: if true; allow write: if signedIn(); }
+    match /settings/{id}   { allow read: if true; allow write: if signedIn(); }
+    match /journal/{id}    { allow read: if true; allow write: if signedIn(); }
+
+    // -------------------------------------------------------------------------
+    // Wholesale price lists: visible to approved business accounts or admin
+    // -------------------------------------------------------------------------
+    match /wholesalePrices/{id} {
+      allow read: if isAdmin() || (signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.wholesale == 'approved');
+      allow write: if isAdmin();
+    }
+
+    // -------------------------------------------------------------------------
+    // Customers
+    // -------------------------------------------------------------------------
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update: if isOwner(uid) || isAdmin();
+
+      match /addresses/{addrId} { 
+        allow read, write: if isOwner(uid) || isAdmin(); 
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Orders: customers create their order; read their own or admin reads all
+    // -------------------------------------------------------------------------
+    match /orders/{id} {
+      allow create: if true;
+      allow read: if signedIn() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if signedIn();
+    }
+
+    // -------------------------------------------------------------------------
+    // Public inquiries and newsletter subscriptions
+    // -------------------------------------------------------------------------
+    match /wholesaleInquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if signedIn();
+    }
+
+    match /newsletter/{id} {
+      allow create, update: if true;
+      allow read, delete: if signedIn();
+    }
+
+    match /discounts/{id} {
+      allow read: if true;
+      allow write: if signedIn();
+    }
+  }
+}
