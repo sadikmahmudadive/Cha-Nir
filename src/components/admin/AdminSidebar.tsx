@@ -17,8 +17,11 @@ import {
   Store,
   Users,
   X,
+  LogOut,
+  ShieldCheck,
 } from "lucide-react";
 import { erpActions, useErpStore } from "@/lib/erp/erp-store";
+import { useAdminAuth, ROLE_LABELS } from "@/lib/firebase/admin-auth";
 import { useState } from "react";
 
 const STOREFRONT_NAV = [
@@ -73,6 +76,14 @@ const ERP_NAV = [
   },
 ];
 
+const PLATFORM_NAV = [
+  {
+    href: "/admin/team",
+    label: "Team & Role RBAC",
+    icon: ShieldCheck,
+  },
+];
+
 export function AdminSidebar({
   mobileOpen,
   onCloseMobile,
@@ -84,6 +95,7 @@ export function AdminSidebar({
 }) {
   const pathname = usePathname();
   const { metrics } = useErpStore();
+  const { user, logout } = useAdminAuth();
   const [resetting, setResetting] = useState(false);
 
   const handleReset = () => {
@@ -221,6 +233,7 @@ export function AdminSidebar({
         <nav className="mt-5 space-y-5" aria-label="Admin & ERP Navigation">
           {renderNavGroup("Storefront Admin", STOREFRONT_NAV)}
           {renderNavGroup("Operations & ERP", ERP_NAV)}
+          {renderNavGroup("Access & Governance", PLATFORM_NAV)}
         </nav>
       </div>
 
@@ -248,16 +261,41 @@ export function AdminSidebar({
           <span>Reset Demo Data</span>
         </button>
 
-        {/* Profile Card */}
-        <div className="flex items-center gap-2.5 pt-1.5 border-t border-black/[0.05]">
-          <div className="size-8.5 rounded-full bg-linear-to-br from-leaf-soft to-lime/40 border border-leaf/20 flex items-center justify-center font-bold text-leaf-deep text-xs shrink-0 shadow-2xs">
-            AD
+        {/* Dynamic Authenticated User Profile */}
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.05]">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="size-8.5 rounded-full bg-linear-to-br from-leaf-soft to-lime/40 border border-leaf/20 flex items-center justify-center font-bold text-leaf-deep text-xs shrink-0 shadow-2xs">
+              {user?.displayName
+                ? user.displayName
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
+                : "SA"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-bold text-brown">
+                {user?.displayName || "Super Admin"}
+              </p>
+              <p className="truncate text-[0.62rem] font-bold text-leaf-deep">
+                {user?.role ? ROLE_LABELS[user.role] : "Super Admin"}
+              </p>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-bold text-brown">S. M. Adive</p>
-            <p className="truncate text-[0.65rem] text-brown-soft">Operations Director</p>
-          </div>
-          <span className="size-2 rounded-full bg-emerald-500" title="Online" />
+
+          <button
+            type="button"
+            onClick={() => {
+              if (confirm("Sign out of Cha Nir Admin OS?")) {
+                logout();
+              }
+            }}
+            className="rounded-lg p-1.5 text-brown-soft hover:text-rose-700 hover:bg-rose-50 transition-colors"
+            title="Sign out"
+          >
+            <LogOut className="size-4" />
+          </button>
         </div>
       </div>
     </div>

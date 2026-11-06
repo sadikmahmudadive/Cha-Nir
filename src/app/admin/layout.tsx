@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { AdminAuthProvider, useAdminAuth } from "@/lib/firebase/admin-auth";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 
@@ -21,14 +23,28 @@ const QuickSearchModal = dynamic(
   { ssr: false }
 );
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+function AdminShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, isLoading } = useAdminAuth();
+
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [newOrderOpen, setNewOrderOpen] = useState(false);
   const [newLotOpen, setNewLotOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const isLoginPage = pathname === "/admin/login";
+
+  // Auth Protection Guard: Redirect unauthenticated requests to /admin/login
+  useEffect(() => {
+    if (!isLoading && !user && !isLoginPage) {
+      router.replace("/admin/login");
+    }
+  }, [user, isLoading, isLoginPage, router]);
+
   // Global ⌘K / Ctrl+K listener
   useEffect(() => {
+    if (isLoginPage) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
@@ -37,7 +53,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isLoginPage]);
+
+  // Login page renders clean without admin chrome
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // Loading indicator while verifying credentials / Firestore session
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fcfbfa] flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3">
+          <div className="size-11 rounded-2xl bg-linear-to-br from-leaf to-leaf-deep text-cream font-bold text-lg flex items-center justify-center shadow-md animate-pulse">
+            CN
+          </div>
+          <div className="flex items-center gap-2 text-xs font-bold text-brown-soft">
+            <span className="size-2 rounded-full bg-leaf animate-ping" />
+            <span>Verifying Admin Session...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If not logged in and not on login page, render blank while redirect triggers
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-[#fcfbfa] text-brown font-sans antialiased selection:bg-lime/40">
@@ -73,5 +116,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <QuickSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       )}
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: { children: ReactNode }) {
+  return (
+    <AdminAuthProvider>
+      <AdminShell>{children}</AdminShell>
+    </AdminAuthProvider>
   );
 }

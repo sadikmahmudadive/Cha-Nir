@@ -10,6 +10,7 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import { useAdminAuth, ROLE_LABELS, ROLE_COLORS } from "@/lib/firebase/admin-auth";
 
 // Memoized leaf clock component to isolate 1-second state updates from re-rendering the header
 const DhakaClock = memo(function DhakaClock() {
@@ -56,6 +57,7 @@ export function AdminHeader({
   onOpenSearch?: () => void;
 }) {
   const pathname = usePathname();
+  const { user } = useAdminAuth();
 
   const getPageInfo = () => {
     if (pathname === "/admin") {
@@ -112,6 +114,13 @@ export function AdminHeader({
         crumb: "Finance & COD",
         title: "COD & Financial Ledger",
         subtitle: "Steadfast & Pathao COD reconciliation, expenses & profit",
+      };
+    }
+    if (pathname.startsWith("/admin/team")) {
+      return {
+        crumb: "Team & Access Control",
+        title: "Admin Accounts & RBAC Roles",
+        subtitle: "Firestore user permissions, role assignment & platform credentials",
       };
     }
     return {
@@ -172,6 +181,20 @@ export function AdminHeader({
 
         {/* Live Dhaka BST Clock (Isolated re-render) */}
         <DhakaClock />
+
+        {/* User Role Badge */}
+        {user?.role && (
+          <Link
+            href="/admin/team"
+            className={`hidden xl:inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.68rem] font-bold border hover:opacity-90 transition-opacity ${
+              ROLE_COLORS[user.role].badge
+            }`}
+            title="View team role & permissions"
+          >
+            <span className={`size-1.5 rounded-full ${ROLE_COLORS[user.role].dot}`} />
+            <span>{ROLE_LABELS[user.role]}</span>
+          </Link>
+        )}
 
         {/* Quick Action: New Order */}
         {onOpenNewOrder && (
