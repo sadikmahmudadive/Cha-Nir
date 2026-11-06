@@ -7,6 +7,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Lock } from "lucide-react";
 import { Field } from "@/components/Field";
 import { cartActions, useCart } from "@/lib/cart";
+import { erpActions } from "@/lib/erp/erp-store";
+import type { BuyerType } from "@/lib/erp/types";
 import { bdt, summarize } from "@/lib/pricing";
 
 const BUYER = ["Home", "Tea stall", "Tea shop / retailer", "Hotel", "Restaurant / café", "Other business"];
@@ -39,9 +41,46 @@ export function CheckoutClient() {
       return;
     }
     setBusy(true);
-    // TODO: POST the order to your backend. This stub only simulates the request.
-    await new Promise((r) => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 600));
     const id = `CN-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    
+    // Register the new order into Cha Nir ERP
+    erpActions.addOrder({
+      id,
+      createdAt: new Date().toISOString(),
+      customer: {
+        name: val("name"),
+        phone: val("phone"),
+        address: val("address"),
+        city: val("city"),
+        buyerType: (val("buyer") || "Home") as BuyerType,
+      },
+      items: summary.items.map((i) => ({
+        slug: i.slug,
+        productName: i.product.name,
+        variantId: i.variant.id,
+        variantLabel: i.variant.label,
+        grams: i.variant.grams,
+        unitPrice: i.variant.price,
+        qty: i.qty,
+        total: i.total,
+      })),
+      subtotal: summary.subtotal,
+      discount: summary.discount,
+      tierLabel: summary.tier ? `${summary.tier.label} (${summary.tier.pct}%)` : undefined,
+      deliveryFee: summary.delivery,
+      total: summary.total,
+      totalKg: summary.kg,
+      status: "pending",
+      paymentMethod: "COD",
+      paymentStatus: "unpaid",
+      courier: {
+        partner: summary.kg >= 20 ? "Steadfast" : "Pathao",
+        codFee: Math.round(summary.total * 0.01),
+      },
+      notes: val("notes") || undefined,
+    });
+
     setPlaced({ id, name: val("name").split(" ")[0], summary });
     cartActions.clear();
     setBusy(false);

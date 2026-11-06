@@ -31,6 +31,8 @@ export function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menu]);
 
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header
       className={`sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${

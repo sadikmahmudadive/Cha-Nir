@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
@@ -9,6 +10,7 @@ import { cartActions, useCart } from "@/lib/cart";
 import { bdt, FREE_DELIVERY_OVER } from "@/lib/pricing";
 
 export function CartDrawer() {
+  const pathname = usePathname();
   const { open, summary } = useCart();
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -24,6 +26,8 @@ export function CartDrawer() {
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  if (pathname?.startsWith("/admin")) return null;
 
   const { tier, nextTier, kg } = summary;
   const tierGoal = nextTier ?? tier;

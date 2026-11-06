@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { SEGMENTS, type Segment } from "@/lib/products";
 
@@ -26,11 +29,15 @@ const COLS = [
       { href: "/wholesale", label: "Wholesale pricing" },
       { href: "/#faq", label: "FAQ" },
       { href: "/checkout", label: "Checkout" },
+      { href: "/admin", label: "Admin & ERP Portal" },
     ],
   },
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <footer className="mt-24 bg-leaf-deep text-cream">
       <div className="container-x grid gap-12 py-16 lg:grid-cols-[1.3fr_2fr]">

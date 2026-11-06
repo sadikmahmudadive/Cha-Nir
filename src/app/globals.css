@@ -195,6 +195,54 @@ select {
   animation: spin-slow 28s linear infinite;
 }
 
+/* Admin chart animations */
+@keyframes ring-in {
+  from {
+    stroke-dashoffset: var(--ring-from);
+  }
+}
+.ring-anim {
+  animation: ring-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes donut-in {
+  from {
+    stroke-dasharray: 0 var(--c);
+  }
+}
+.donut-seg {
+  animation: donut-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+.bar-grow {
+  transform-origin: bottom;
+  animation: bar-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes line-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.line-draw {
+  stroke-dasharray: 1;
+  animation: line-draw 1.2s ease-out 0.2s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-anim,
+  .donut-seg,
+  .bar-grow,
+  .line-draw {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

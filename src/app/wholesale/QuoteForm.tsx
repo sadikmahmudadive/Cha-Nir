@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { Field } from "@/components/Field";
+import { erpActions } from "@/lib/erp/erp-store";
 import { PRODUCTS } from "@/lib/products";
 
 const TYPES = ["Tea stall", "Tea shop / retailer", "Hotel", "Restaurant / café", "Office / institution", "Other"];
@@ -33,8 +34,22 @@ export function QuoteForm() {
       return;
     }
     setBusy(true);
-    // TODO: send to your backend / CRM / WhatsApp. This stub only simulates the request.
-    await new Promise((r) => setTimeout(r, 700));
+    await new Promise((r) => setTimeout(r, 500));
+    
+    // Register lead in Cha Nir ERP CRM
+    erpActions.addWholesaleLead({
+      id: `LEAD-${Date.now().toString(36).toUpperCase().slice(-5)}`,
+      name: val("name"),
+      businessName: val("business") || undefined,
+      phone: val("phone"),
+      type: val("type"),
+      volume: val("volume"),
+      targetProduct: val("product") || undefined,
+      notes: val("notes") || undefined,
+      status: "new",
+      createdAt: new Date().toISOString(),
+    });
+
     setBusy(false);
     setSent(val("name").split(" ")[0]);
   }
