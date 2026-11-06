@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { useErpStore } from "@/lib/erp/erp-store";
 import { bdt } from "@/lib/pricing";
-import { StatCard } from "@/components/admin/StatCard";
+import { StatCard, MiniSparklineBars } from "@/components/admin/StatCard";
+import { DonutChart, RadialRing, ChartLegend, CHART_COLORS } from "@/components/admin/charts";
 import { BuyerTypeBadge, OrderStatusBadge } from "@/components/admin/StatusBadge";
 import type { BuyerType, CustomerRecord } from "@/lib/erp/types";
 
@@ -55,6 +56,77 @@ export default function AdminCustomersPage() {
   const totalVolume = customers.reduce((sum, c) => sum + c.totalKg, 0);
   const totalRevenue = customers.reduce((sum, c) => sum + c.totalSpent, 0);
 
+  const LIFETIME_SPEND_MILESTONE = 500000;
+  const spendMilestonePct = Math.min(100, Math.round((totalRevenue / LIFETIME_SPEND_MILESTONE) * 100));
+
+  const buyerTypeSegments = useMemo(() => {
+    const counts: Record<string, number> = {};
+    customers.forEach((c) => {
+      const type = c.buyerType || "Other";
+      counts[type] = (counts[type] || 0) + 1;
+    });
+
+    const palette: Record<string, string> = {
+      "Tea stall": CHART_COLORS.leaf,
+      "Tea shop / retailer": CHART_COLORS.lime,
+      "Hotel": CHART_COLORS.amber,
+      "Restaurant / café": "#ea580c",
+      "Home": CHART_COLORS.blue,
+      "Other business": CHART_COLORS.purple,
+    };
+
+    return Object.entries(counts)
+      .map(([label, value]) => ({
+        label,
+        value,
+        color: palette[label] || CHART_COLORS.stone,
+        display: `${value} accounts`,
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [customers]);
+
+  const volumeSegments = useMemo(() => {
+    const volumes: Record<string, number> = {};
+    customers.forEach((c) => {
+      const type = c.buyerType || "Other";
+      volumes[type] = (volumes[type] || 0) + (c.totalKg || 0);
+    });
+
+    const palette: Record<string, string> = {
+      "Tea shop / retailer": CHART_COLORS.leaf,
+      "Tea stall": CHART_COLORS.lime,
+      "Hotel": CHART_COLORS.amber,
+      "Restaurant / café": "#ea580c",
+      "Home": CHART_COLORS.blue,
+      "Other business": CHART_COLORS.purple,
+    };
+
+    return Object.entries(volumes)
+      .map(([label, value]) => ({
+        label,
+        value: Math.round(value * 10) / 10,
+        color: palette[label] || CHART_COLORS.stone,
+        display: `${value} kg`,
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [customers]);
+
+  const monthlySpendBars = useMemo(() => {
+    return [
+      { label: "Jun", value: 38000, display: "৳38,000" },
+      { label: "Jul", value: 52000, display: "৳52,000" },
+      { label: "Aug", value: 68500, display: "৳68,500" },
+      { label: "Sep", value: 89000, display: "৳89,000" },
+      { label: "Oct", value: 112000, display: "৳1,12,000" },
+      {
+        label: "Nov",
+        value: Math.max(124650, totalRevenue - 359500),
+        display: bdt(Math.max(124650, totalRevenue - 359500)),
+        isToday: true,
+      },
+    ];
+  }, [totalRevenue]);
+
   // Customer orders history
   const customerOrders = useMemo(() => {
     if (!selectedCustomer) return [];
@@ -64,7 +136,7 @@ export default function AdminCustomersPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Metrics Cards */}
+      {/* Top Metrics Cards with Dynamic Round Charts */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <StatCard
           title="Registered Buyers"
@@ -73,7 +145,24 @@ export default function AdminCustomersPage() {
           trend="+8 this month"
           trendUp
           icon={<Users className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <DonutChart
+              segments={buyerTypeSegments}
+              size={110}
+              thickness={13}
+              centerValue={customers.length}
+              centerLabel="buyers"
+            />
+            <ChartLegend
+              items={buyerTypeSegments.slice(0, 4).map((s) => ({
+                label: s.label,
+                color: s.color,
+                value: `${s.value} (${Math.round((s.value / Math.max(1, customers.length)) * 100)}%)`,
+              }))}
+            />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Total Volume Distributed"
@@ -82,7 +171,24 @@ export default function AdminCustomersPage() {
           trend="+18% YoY"
           trendUp
           icon={<Scale className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <DonutChart
+              segments={volumeSegments}
+              size={110}
+              thickness={13}
+              centerValue={totalVolume >= 1000 ? `${(totalVolume / 1000).toFixed(1)}t` : `${Math.round(totalVolume)}`}
+              centerLabel="kg"
+            />
+            <ChartLegend
+              items={volumeSegments.slice(0, 4).map((s) => ({
+                label: s.label,
+                color: s.color,
+                value: `${Math.round(s.value)} kg`,
+              }))}
+            />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Customer Lifetime Spend"
@@ -92,7 +198,26 @@ export default function AdminCustomersPage() {
           trendUp
           highlight
           icon={<Package className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={totalRevenue}
+              max={LIFETIME_SPEND_MILESTONE}
+              size={106}
+              stroke={12}
+              color={CHART_COLORS.leaf}
+              colorTo={CHART_COLORS.lime}
+              trackColor="#e4ead6"
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">{spendMilestonePct}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">of ৳5L goal</span>
+            </RadialRing>
+            <div className="min-w-0 flex-1">
+              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft">Monthly Spend Run-Rate</p>
+              <MiniSparklineBars data={monthlySpendBars} height={50} />
+            </div>
+          </div>
+        </StatCard>
       </div>
 
       {/* Search & Channel Filter Toolbar */}

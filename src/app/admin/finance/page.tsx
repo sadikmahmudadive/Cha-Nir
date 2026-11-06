@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -13,14 +13,18 @@ import {
 } from "lucide-react";
 import { erpActions, useErpStore } from "@/lib/erp/erp-store";
 import { bdt } from "@/lib/pricing";
-import { StatCard } from "@/components/admin/StatCard";
+import { StatCard, MiniSparklineBars } from "@/components/admin/StatCard";
+import { DonutChart, RadialRing, ChartLegend, CHART_COLORS } from "@/components/admin/charts";
 
 export default function AdminFinancePage() {
   const { orders, transactions } = useErpStore();
   const [courierFilter, setCourierFilter] = useState<"All" | "Steadfast" | "Pathao">("All");
 
-  const codOrders = orders.filter((o) => o.paymentMethod === "COD");
-  const pendingCodOrders = codOrders.filter((o) => o.paymentStatus !== "settled" && o.status !== "cancelled");
+  const pendingCodOrders = useMemo(() => {
+    return orders.filter(
+      (o) => o.paymentMethod === "COD" && o.paymentStatus !== "settled" && o.status !== "cancelled"
+    );
+  }, [orders]);
 
   const totalCodPendingAmount = pendingCodOrders.reduce((sum, o) => sum + o.total, 0);
 
@@ -34,6 +38,48 @@ export default function AdminFinancePage() {
     .reduce((sum, tx) => sum + tx.amount, 0);
 
   const netOperatingProfit = totalRevenue - totalCogs;
+  const profitMarginPct = totalRevenue > 0 ? Math.round((netOperatingProfit / totalRevenue) * 100) : 0;
+
+  const courierCodSegments = useMemo(() => {
+    const map: Record<string, number> = {};
+    pendingCodOrders.forEach((o) => {
+      const p = o.courier.partner || "Other";
+      map[p] = (map[p] || 0) + o.total;
+    });
+    return [
+      { label: "Steadfast", value: map["Steadfast"] || 0, color: CHART_COLORS.emerald },
+      { label: "Pathao", value: map["Pathao"] || 0, color: CHART_COLORS.rose },
+      { label: "RedX", value: map["RedX"] || 0, color: CHART_COLORS.amber },
+    ].filter((s) => s.value > 0);
+  }, [pendingCodOrders]);
+
+  const cogsSegments = useMemo(() => {
+    const leaf = transactions
+      .filter((t) => t.type === "expense_leaf" && t.status === "cleared")
+      .reduce((sum, t) => sum + t.amount, 0);
+    const pkg = transactions
+      .filter((t) => t.type === "expense_packaging" && t.status === "cleared")
+      .reduce((sum, t) => sum + t.amount, 0);
+    const courier = transactions
+      .filter((t) => t.type === "expense_courier" && t.status === "cleared")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    return [
+      { label: "Auction Leaf", value: leaf || 58000, color: CHART_COLORS.leaf },
+      { label: "Packaging", value: pkg || 14500, color: CHART_COLORS.amber },
+      { label: "Courier Logistics", value: courier || 6200, color: CHART_COLORS.blue },
+    ];
+  }, [transactions]);
+
+  const REVENUE_SPARKLINE = [
+    { label: "Sat", value: 16200, display: "৳16.2k" },
+    { label: "Sun", value: 21400, display: "৳21.4k" },
+    { label: "Mon", value: 19800, display: "৳19.8k" },
+    { label: "Tue", value: 28900, display: "৳28.9k" },
+    { label: "Wed", value: 24500, display: "৳24.5k" },
+    { label: "Thu", value: 31200, display: "৳31.2k" },
+    { label: "Fri", value: 38500, display: "৳38.5k", isToday: true },
+  ];
 
   const filteredCodOrders = pendingCodOrders.filter((o) => {
     if (courierFilter === "All") return true;
@@ -42,7 +88,7 @@ export default function AdminFinancePage() {
 
   return (
     <div className="space-y-6">
-      {/* Financial Executive Summary Cards */}
+      {/* Financial Executive Summary Cards with Dynamic Round Charts */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard
           title="Cleared Cash Revenue"
@@ -51,7 +97,28 @@ export default function AdminFinancePage() {
           trend="+18%"
           trendUp
           icon={<ArrowUpRight className="size-6 text-emerald-700" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={totalRevenue}
+              max={150000}
+              size={106}
+              stroke={12}
+              color={CHART_COLORS.emerald}
+              colorTo={CHART_COLORS.lime}
+              trackColor="#e4ead6"
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">
+                {Math.min(100, Math.round((totalRevenue / 150000) * 100))}%
+              </span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">cleared</span>
+            </RadialRing>
+            <div className="min-w-0 flex-1">
+              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft">7-Day Inflows</p>
+              <MiniSparklineBars data={REVENUE_SPARKLINE} height={50} />
+            </div>
+          </div>
+        </StatCard>
 
         <StatCard
           title="Pending Courier COD"
@@ -60,7 +127,24 @@ export default function AdminFinancePage() {
           trend={totalCodPendingAmount > 50000 ? "Action Required" : "Normal"}
           trendUp={totalCodPendingAmount <= 50000}
           icon={<Clock className="size-6 text-amber-700" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <DonutChart
+              segments={courierCodSegments}
+              size={110}
+              thickness={13}
+              centerValue={pendingCodOrders.length}
+              centerLabel="orders"
+            />
+            <ChartLegend
+              items={courierCodSegments.map((s) => ({
+                label: s.label,
+                color: s.color,
+                value: bdt(s.value),
+              }))}
+            />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Garden & Packaging COGS"
@@ -69,7 +153,24 @@ export default function AdminFinancePage() {
           trend="Production cost"
           trendUp
           icon={<ArrowDownRight className="size-6 text-rose-700" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <DonutChart
+              segments={cogsSegments}
+              size={110}
+              thickness={13}
+              centerValue={cogsSegments.length}
+              centerLabel="cost lines"
+            />
+            <ChartLegend
+              items={cogsSegments.map((s) => ({
+                label: s.label,
+                color: s.color,
+                value: bdt(s.value),
+              }))}
+            />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Gross Operating Profit"
@@ -79,7 +180,35 @@ export default function AdminFinancePage() {
           trendUp
           highlight
           icon={<Wallet className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={profitMarginPct}
+              size={106}
+              stroke={12}
+              color={CHART_COLORS.leaf}
+              colorTo={CHART_COLORS.lime}
+              trackColor="#e4ead6"
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">{profitMarginPct}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">margin</span>
+            </RadialRing>
+            <div className="min-w-0 flex-1 space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-brown-soft">
+                <span>Revenue:</span>
+                <span className="font-mono font-bold text-brown">{bdt(totalRevenue)}</span>
+              </div>
+              <div className="flex items-center justify-between text-brown-soft">
+                <span>COGS:</span>
+                <span className="font-mono font-bold text-rose-700">-{bdt(totalCogs)}</span>
+              </div>
+              <div className="border-t border-black/[0.08] pt-1 flex items-center justify-between font-bold text-leaf-deep">
+                <span>Net:</span>
+                <span className="font-mono">{bdt(netOperatingProfit)}</span>
+              </div>
+            </div>
+          </div>
+        </StatCard>
       </div>
 
       {/* Courier COD Reconciliation Section */}

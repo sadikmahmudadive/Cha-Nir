@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   AlertTriangle,
   Boxes,
@@ -13,6 +13,7 @@ import {
 import { erpActions, useErpStore } from "@/lib/erp/erp-store";
 import { bdt } from "@/lib/pricing";
 import { StatCard } from "@/components/admin/StatCard";
+import { DonutChart, RadialRing, ChartLegend, CHART_COLORS } from "@/components/admin/charts";
 
 export default function AdminInventoryPage() {
   const { inventory, rawLots, packaging } = useErpStore();
@@ -23,7 +24,39 @@ export default function AdminInventoryPage() {
   // Metrics
   const totalFinishedKg = inventory.reduce((sum, item) => sum + item.inStockKg, 0);
   const totalRawKg = rawLots.reduce((sum, lot) => sum + lot.remainingKg, 0);
+  const totalInitialRawKg = rawLots.reduce((sum, lot) => sum + lot.initialKg, 0);
+  const rawRemainingPct = totalInitialRawKg > 0 ? Math.round((totalRawKg / totalInitialRawKg) * 100) : 0;
   const lowStockSkus = inventory.filter((i) => i.inStockUnits <= i.reorderPointUnits);
+  const healthyCount = inventory.length - lowStockSkus.length;
+  const healthRate = inventory.length > 0 ? Math.round((healthyCount / inventory.length) * 100) : 100;
+
+  const categorySegments = useMemo(() => {
+    const cats: Record<string, number> = {};
+    inventory.forEach((item) => {
+      cats[item.category] = (cats[item.category] || 0) + item.inStockKg;
+    });
+    return [
+      { label: "Black Tea", value: Math.round((cats["Black Tea"] || 0) * 10) / 10, color: CHART_COLORS.leaf },
+      { label: "Green Tea", value: Math.round((cats["Green Tea"] || 0) * 10) / 10, color: CHART_COLORS.emerald },
+      { label: "Specialty", value: Math.round((cats["Specialty"] || 0) * 10) / 10, color: CHART_COLORS.amber },
+    ].filter((s) => s.value > 0);
+  }, [inventory]);
+
+  const rawLotsLegend = useMemo(() => {
+    const activeLots = rawLots.filter((l) => l.status === "active").length;
+    return [
+      { label: "Active Lots", color: CHART_COLORS.leaf, value: `${activeLots} lots` },
+      { label: "Remaining", color: CHART_COLORS.lime, value: `${Math.round(totalRawKg)} kg` },
+      { label: "Initial Intake", color: CHART_COLORS.stone, value: `${Math.round(totalInitialRawKg)} kg` },
+    ];
+  }, [rawLots, totalRawKg, totalInitialRawKg]);
+
+  const stockHealthLegend = useMemo(() => {
+    return [
+      { label: "Optimal Stock", color: CHART_COLORS.emerald, value: `${healthyCount} SKUs` },
+      { label: "Low / Reorder", color: lowStockSkus.length > 0 ? CHART_COLORS.amber : CHART_COLORS.stone, value: `${lowStockSkus.length} SKUs` },
+    ];
+  }, [healthyCount, lowStockSkus]);
 
   const startEdit = (id: string, currentUnits: number) => {
     setEditingSku(id);
@@ -37,7 +70,7 @@ export default function AdminInventoryPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Inventory Metrics */}
+      {/* Top Inventory Metrics with Dynamic Round Charts */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <StatCard
           title="Packaged Warehouse Stock"
@@ -46,7 +79,24 @@ export default function AdminInventoryPage() {
           trend="Healthy"
           trendUp
           icon={<Package className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <DonutChart
+              segments={categorySegments}
+              size={110}
+              thickness={13}
+              centerValue={Math.round(totalFinishedKg)}
+              centerLabel="kg"
+            />
+            <ChartLegend
+              items={categorySegments.map((s) => ({
+                label: s.label,
+                color: s.color,
+                value: `${Math.round(s.value)} kg`,
+              }))}
+            />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Unblended Garden Lots"
@@ -56,7 +106,23 @@ export default function AdminInventoryPage() {
           trendUp
           highlight
           icon={<Scale className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={totalRawKg}
+              max={totalInitialRawKg}
+              size={106}
+              stroke={12}
+              color={CHART_COLORS.leaf}
+              colorTo={CHART_COLORS.lime}
+              trackColor="#e4ead6"
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">{rawRemainingPct}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">left</span>
+            </RadialRing>
+            <ChartLegend items={rawLotsLegend} />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Inventory Alerts"
@@ -65,7 +131,21 @@ export default function AdminInventoryPage() {
           trend={lowStockSkus.length > 0 ? "Attention Required" : "Optimal"}
           trendUp={lowStockSkus.length === 0}
           icon={<AlertTriangle className="size-6 text-amber-700" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={healthRate}
+              size={106}
+              stroke={12}
+              color={lowStockSkus.length === 0 ? CHART_COLORS.emerald : CHART_COLORS.amber}
+              colorTo={lowStockSkus.length === 0 ? CHART_COLORS.lime : "#f97316"}
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">{healthRate}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">in stock</span>
+            </RadialRing>
+            <ChartLegend items={stockHealthLegend} />
+          </div>
+        </StatCard>
       </div>
 
       {/* Tabs */}

@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import { erpActions, useErpStore } from "@/lib/erp/erp-store";
 import { bdt } from "@/lib/pricing";
-import { StatCard } from "@/components/admin/StatCard";
+import { StatCard, MiniSparklineBars } from "@/components/admin/StatCard";
+import { DonutChart, RadialRing, ChartLegend, CHART_COLORS } from "@/components/admin/charts";
 import { LeadStatusBadge } from "@/components/admin/StatusBadge";
 import type { WholesaleLeadStatus } from "@/lib/erp/types";
 
@@ -60,9 +61,44 @@ export default function AdminWholesalePage() {
     setEditingQuote(null);
   };
 
+  const PIPELINE_TARGET = 300000;
+  const pipelineTargetPct = Math.min(100, Math.round((totalPipelineValue / PIPELINE_TARGET) * 100));
+  const winRate = leads.length > 0 ? Math.round((wonLeads.length / leads.length) * 100) : 0;
+
+  const stageSegments = useMemo(() => {
+    const stageMap: Record<string, number> = {};
+    activeLeads.forEach((l) => {
+      stageMap[l.status] = (stageMap[l.status] || 0) + 1;
+    });
+
+    return [
+      { label: "New", value: stageMap["new"] || 0, color: CHART_COLORS.blue },
+      { label: "Contacted", value: stageMap["contacted"] || 0, color: CHART_COLORS.amber },
+      { label: "Sample Sent", value: stageMap["sample_sent"] || 0, color: CHART_COLORS.purple },
+      { label: "Quote Sent", value: stageMap["quote_sent"] || 0, color: CHART_COLORS.lime },
+      { label: "Won", value: stageMap["won"] || 0, color: CHART_COLORS.leaf },
+    ].filter((s) => s.value > 0);
+  }, [activeLeads]);
+
+  const PIPELINE_SPARKLINE = [
+    { label: "W1", value: 45000, display: "৳45k" },
+    { label: "W2", value: 85000, display: "৳85k" },
+    { label: "W3", value: 130000, display: "৳130k" },
+    { label: "W4", value: 175000, display: "৳175k" },
+    { label: "W5", value: totalPipelineValue, display: bdt(totalPipelineValue), isToday: true },
+  ];
+
+  const dealWonLegend = useMemo(() => {
+    const pipelineCount = activeLeads.length - wonLeads.length;
+    return [
+      { label: "Won Deals", color: CHART_COLORS.emerald, value: `${wonLeads.length} accounts` },
+      { label: "In Negotiation", color: CHART_COLORS.amber, value: `${pipelineCount} accounts` },
+    ];
+  }, [activeLeads, wonLeads]);
+
   return (
     <div className="space-y-6">
-      {/* Top CRM Pipeline Cards */}
+      {/* Top CRM Pipeline Cards with Dynamic Round Charts */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <StatCard
           title="Total B2B Pipeline Value"
@@ -72,7 +108,26 @@ export default function AdminWholesalePage() {
           trendUp
           highlight
           icon={<DollarSign className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={totalPipelineValue}
+              max={PIPELINE_TARGET}
+              size={106}
+              stroke={12}
+              color={CHART_COLORS.leaf}
+              colorTo={CHART_COLORS.lime}
+              trackColor="#e4ead6"
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">{pipelineTargetPct}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">of quota</span>
+            </RadialRing>
+            <div className="min-w-0 flex-1">
+              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft">Weekly Deal Progression</p>
+              <MiniSparklineBars data={PIPELINE_SPARKLINE} height={50} />
+            </div>
+          </div>
+        </StatCard>
 
         <StatCard
           title="Active Inbound Inquiries"
@@ -81,16 +136,47 @@ export default function AdminWholesalePage() {
           trend="Inbound desk"
           trendUp
           icon={<Users className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <DonutChart
+              segments={stageSegments}
+              size={110}
+              thickness={13}
+              centerValue={activeLeads.length}
+              centerLabel="leads"
+            />
+            <ChartLegend
+              items={stageSegments.map((s) => ({
+                label: s.label,
+                color: s.color,
+                value: `${s.value} (${Math.round((s.value / Math.max(1, activeLeads.length)) * 100)}%)`,
+              }))}
+            />
+          </div>
+        </StatCard>
 
         <StatCard
           title="Converted Commercial Clients"
           value={`${wonLeads.length} Contracts`}
           subtitle="Recurring bulk supply orders"
-          trend="82% win rate"
+          trend={`${winRate}% win rate`}
           trendUp
           icon={<CheckCircle2 className="size-6 text-leaf" />}
-        />
+        >
+          <div className="flex items-center gap-3.5 pt-1">
+            <RadialRing
+              value={winRate}
+              size={106}
+              stroke={12}
+              color={CHART_COLORS.emerald}
+              colorTo={CHART_COLORS.lime}
+            >
+              <span className="font-mono text-xl font-extrabold text-brown leading-none">{winRate}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">win rate</span>
+            </RadialRing>
+            <ChartLegend items={dealWonLegend} />
+          </div>
+        </StatCard>
       </div>
 
       {/* Stage Tabs & Search Toolbar */}
