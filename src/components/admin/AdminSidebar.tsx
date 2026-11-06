@@ -108,7 +108,7 @@ export function AdminSidebar({
 
   const renderNavGroup = (title: string, items: typeof STOREFRONT_NAV) => (
     <div className="space-y-1">
-      <p className="px-3 text-[0.65rem] font-bold uppercase tracking-wider text-brown-soft/70">
+      <p className="px-3 text-[0.65rem] font-bold uppercase tracking-wider text-brown-soft/70 dark:text-[#7d8b78]">
         {title}
       </p>
       {items.map((item) => {
@@ -127,8 +127,8 @@ export function AdminSidebar({
             onClick={onCloseMobile}
             className={`group relative flex items-center justify-between rounded-xl px-3 py-2.5 text-[0.85rem] font-semibold transition-all duration-150 ${
               active
-                ? "bg-leaf text-cream shadow-xs font-bold"
-                : "text-brown-soft hover:bg-cream-2/70 hover:text-brown"
+                ? "bg-leaf text-cream dark:bg-leaf dark:text-[#f4f7f2] shadow-xs font-bold"
+                : "text-brown-soft dark:text-[#98a793] hover:bg-cream-2/70 dark:hover:bg-white/[0.06] hover:text-brown dark:hover:text-[#f4f7f2]"
             }`}
           >
             {/* Active Pill Left Indicator Bar */}
@@ -139,7 +139,7 @@ export function AdminSidebar({
             <div className="flex items-center gap-2.5">
               <Icon
                 className={`size-4 transition-colors ${
-                  active ? "text-lime" : "text-brown-soft/80 group-hover:text-brown"
+                  active ? "text-lime" : "text-brown-soft/80 dark:text-[#98a793] group-hover:text-brown dark:group-hover:text-[#f4f7f2]"
                 }`}
               />
               <span className="truncate">{item.label}</span>
@@ -149,8 +149,8 @@ export function AdminSidebar({
               <span
                 className={`rounded-full px-2 py-0.2 text-[0.68rem] font-bold font-mono tracking-wide ${
                   active
-                    ? "bg-cream text-leaf-deep shadow-2xs"
-                    : "bg-lime/40 text-leaf-deep border border-lime/30"
+                    ? "bg-cream dark:bg-lime/20 text-leaf-deep dark:text-lime-soft shadow-2xs"
+                    : "bg-lime/40 dark:bg-lime/20 text-leaf-deep dark:text-lime-soft border border-lime/30"
                 }`}
               >
                 {badgeValue}
@@ -163,26 +163,26 @@ export function AdminSidebar({
   );
 
   const content = (
-    <div className="flex h-full flex-col justify-between border-r border-black/[0.07] bg-[#fffdfa] px-3.5 py-5 text-brown overflow-y-auto">
+    <div className="flex h-full flex-col justify-between border-r border-black/[0.07] dark:border-white/[0.08] bg-[#fffdfa] dark:bg-[#111611] px-3.5 py-5 text-brown dark:text-[#f4f7f2] overflow-y-auto">
       {/* Brand Header & Navigation */}
       <div>
-        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06] dark:border-white/[0.07]">
           <Link href="/admin" className="flex items-center gap-3 group">
             <div className="relative flex size-10 items-center justify-center rounded-xl bg-linear-to-br from-leaf to-leaf-deep text-cream font-bold text-base shadow-sm ring-1 ring-leaf/20 shrink-0 group-hover:scale-105 transition-transform">
               <span>CN</span>
-              <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-lime border-2 border-white" />
+              <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-lime border-2 border-white dark:border-[#111611]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-serif text-lg font-bold tracking-tight text-brown">
+                <span className="font-serif text-lg font-bold tracking-tight text-brown dark:text-[#f4f7f2]">
                   Cha Nir
                 </span>
-                <span className="rounded bg-leaf-soft/70 px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-leaf-deep border border-leaf/20">
+                <span className="rounded bg-leaf-soft/70 dark:bg-leaf/25 px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-leaf-deep dark:text-lime-soft border border-leaf/20 dark:border-leaf/35">
                   Admin OS
                 </span>
               </div>
-              <p className="text-[0.67rem] text-brown-soft flex items-center gap-1">
-                <Sparkles className="size-2.5 text-leaf" />
+              <p className="text-[0.67rem] text-brown-soft dark:text-[#98a793] flex items-center gap-1">
+                <Sparkles className="size-2.5 text-leaf dark:text-lime" />
                 <span>Storefront & ERP Suite</span>
               </p>
             </div>
@@ -192,7 +192,7 @@ export function AdminSidebar({
             <button
               type="button"
               onClick={onCloseMobile}
-              className="lg:hidden rounded-lg p-1.5 text-brown-soft hover:bg-cream"
+              className="lg:hidden rounded-lg p-1.5 text-brown-soft dark:text-[#98a793] hover:bg-cream dark:hover:bg-white/[0.06] hover:text-brown dark:hover:text-[#f4f7f2]"
               aria-label="Close sidebar"
             >
               <X className="size-5" />
@@ -205,28 +205,28 @@ export function AdminSidebar({
           <button
             type="button"
             onClick={onOpenSearch}
-            className="mt-3.5 flex w-full items-center justify-between rounded-xl border border-black/[0.07] bg-cream/40 hover:bg-cream/80 px-3 py-2 text-xs text-brown-soft hover:text-brown transition-all shadow-2xs group"
+            className="mt-3.5 flex w-full items-center justify-between rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-cream/40 dark:bg-white/[0.04] hover:bg-cream/80 dark:hover:bg-white/[0.08] px-3 py-2 text-xs text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2] transition-all shadow-2xs group"
           >
             <div className="flex items-center gap-2">
-              <Search className="size-3.5 text-leaf" />
+              <Search className="size-3.5 text-leaf dark:text-lime" />
               <span className="font-medium text-[0.78rem]">Search anywhere...</span>
             </div>
-            <kbd className="inline-flex items-center rounded border border-black/[0.1] bg-white px-1.5 py-0.2 font-mono text-[0.62rem] text-brown-soft shadow-2xs">
+            <kbd className="inline-flex items-center rounded border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1a2219] px-1.5 py-0.2 font-mono text-[0.62rem] text-brown-soft dark:text-[#98a793] shadow-2xs">
               ⌘K
             </kbd>
           </button>
         )}
 
         {/* Live Sylhet Hub Status Pill */}
-        <div className="mt-3 flex items-center justify-between rounded-xl bg-cream/60 border border-black/[0.05] p-2 text-xs">
+        <div className="mt-3 flex items-center justify-between rounded-xl bg-cream/60 dark:bg-[#161d15] border border-black/[0.05] dark:border-white/[0.06] p-2 text-xs">
           <div className="flex items-center gap-2">
             <span className="relative flex size-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
             </span>
-            <span className="font-semibold text-leaf-deep text-[0.72rem]">Sylhet Hub Active</span>
+            <span className="font-semibold text-leaf-deep dark:text-lime-soft text-[0.72rem]">Sylhet Hub Active</span>
           </div>
-          <span className="font-mono text-[0.68rem] text-brown-soft/80">BST (GMT+6)</span>
+          <span className="font-mono text-[0.68rem] text-brown-soft/80 dark:text-[#98a793]">BST (GMT+6)</span>
         </div>
 
         {/* Navigation Sections */}
@@ -238,33 +238,33 @@ export function AdminSidebar({
       </div>
 
       {/* Footer controls & Profile */}
-      <div className="space-y-2.5 pt-5 border-t border-black/[0.06] mt-6">
+      <div className="space-y-2.5 pt-5 border-t border-black/[0.06] dark:border-white/[0.07] mt-6">
         <Link
           href="/"
           target="_blank"
-          className="flex items-center justify-between rounded-xl border border-black/[0.07] bg-white px-3 py-2 text-xs font-semibold text-brown hover:bg-cream/70 hover:border-leaf/30 transition-all shadow-2xs group"
+          className="flex items-center justify-between rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-white dark:bg-[#161d15] px-3 py-2 text-xs font-semibold text-brown dark:text-[#f4f7f2] hover:bg-cream/70 dark:hover:bg-white/[0.06] hover:border-leaf/30 transition-all shadow-2xs group"
         >
           <div className="flex items-center gap-2">
-            <Store className="size-3.5 text-leaf group-hover:scale-110 transition-transform" />
+            <Store className="size-3.5 text-leaf dark:text-lime group-hover:scale-110 transition-transform" />
             <span>Storefront Public View</span>
           </div>
-          <ExternalLink className="size-3 text-brown-soft group-hover:text-leaf transition-colors" />
+          <ExternalLink className="size-3 text-brown-soft dark:text-[#98a793] group-hover:text-leaf dark:group-hover:text-lime transition-colors" />
         </Link>
 
         <button
           type="button"
           onClick={handleReset}
           disabled={resetting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/[0.06] bg-transparent px-3 py-1.5 text-[0.72rem] font-semibold text-brown-soft hover:bg-rose-50 hover:text-rose-700 transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-transparent px-3 py-1.5 text-[0.72rem] font-semibold text-brown-soft dark:text-[#98a793] hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-700 dark:hover:text-rose-400 transition-colors"
         >
           <RotateCcw className={`size-3 ${resetting ? "animate-spin" : ""}`} />
           <span>Reset Demo Data</span>
         </button>
 
         {/* Dynamic Authenticated User Profile */}
-        <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.05]">
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/[0.05] dark:border-white/[0.06]">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="size-8.5 rounded-full bg-linear-to-br from-leaf-soft to-lime/40 border border-leaf/20 flex items-center justify-center font-bold text-leaf-deep text-xs shrink-0 shadow-2xs">
+            <div className="size-8.5 rounded-full bg-linear-to-br from-leaf-soft to-lime/40 dark:from-leaf/30 dark:to-lime/20 border border-leaf/20 dark:border-leaf/35 flex items-center justify-center font-bold text-leaf-deep dark:text-lime-soft text-xs shrink-0 shadow-2xs">
               {user?.displayName
                 ? user.displayName
                     .split(" ")
@@ -275,10 +275,10 @@ export function AdminSidebar({
                 : "SA"}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold text-brown">
+              <p className="truncate text-xs font-bold text-brown dark:text-[#f4f7f2]">
                 {user?.displayName || "Super Admin"}
               </p>
-              <p className="truncate text-[0.62rem] font-bold text-leaf-deep">
+              <p className="truncate text-[0.62rem] font-bold text-leaf-deep dark:text-lime-soft">
                 {user?.role ? ROLE_LABELS[user.role] : "Super Admin"}
               </p>
             </div>
@@ -291,7 +291,7 @@ export function AdminSidebar({
                 logout();
               }
             }}
-            className="rounded-lg p-1.5 text-brown-soft hover:text-rose-700 hover:bg-rose-50 transition-colors"
+            className="rounded-lg p-1.5 text-brown-soft dark:text-[#98a793] hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
             title="Sign out"
           >
             <LogOut className="size-4" />

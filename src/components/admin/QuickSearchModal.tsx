@@ -104,30 +104,30 @@ export function QuickSearchModal({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 sm:pt-24 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-line overflow-hidden text-brown"
+        className="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-[#141a14] shadow-2xl border border-line dark:border-white/[0.08] overflow-hidden text-brown dark:text-[#f4f7f2]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-line bg-cream/30">
-          <Search className="size-5 text-leaf shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-line dark:border-white/[0.08] bg-cream/30 dark:bg-white/[0.03]">
+          <Search className="size-5 text-leaf dark:text-lime shrink-0" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search orders, teas, customers, tea lots, or jump to page..."
-            className="flex-1 bg-transparent text-sm font-medium text-brown placeholder:text-brown-soft/60 focus:outline-none"
+            className="flex-1 bg-transparent text-sm font-medium text-brown dark:text-[#f4f7f2] placeholder:text-brown-soft/60 dark:placeholder:text-[#98a793]/60 focus:outline-none"
           />
           {query && (
             <button
               type="button"
               onClick={() => setQuery("")}
-              className="p-1 rounded-md text-brown-soft hover:bg-cream"
+              className="p-1 rounded-md text-brown-soft dark:text-[#98a793] hover:bg-cream dark:hover:bg-white/[0.06]"
             >
               <X className="size-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-line bg-white px-2 py-0.5 text-[0.65rem] font-mono text-brown-soft">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-line dark:border-white/[0.1] bg-white dark:bg-[#1a2219] px-2 py-0.5 text-[0.65rem] font-mono text-brown-soft dark:text-[#98a793]">
             ESC
           </kbd>
         </div>
@@ -139,7 +139,7 @@ export function QuickSearchModal({
               {/* Products Results */}
               {searchResults.products.length > 0 && (
                 <div>
-                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 mb-1.5 px-2">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mb-1.5 px-2">
                     Teas & Products
                   </p>
                   <div className="space-y-1">
@@ -148,18 +148,18 @@ export function QuickSearchModal({
                         key={p.slug}
                         type="button"
                         onClick={() => navigateTo("/admin/products")}
-                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 text-left transition-colors group"
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 dark:hover:bg-white/[0.05] text-left transition-colors group"
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className="relative size-8 rounded-lg overflow-hidden bg-cream border border-line shrink-0">
+                          <div className="relative size-8 rounded-lg overflow-hidden bg-cream dark:bg-[#1a2219] border border-line dark:border-white/[0.08] shrink-0">
                             <Image src={p.image} alt={p.name} fill className="object-cover" sizes="32px" />
                           </div>
                           <div>
-                            <p className="font-bold text-brown group-hover:text-leaf transition-colors">{p.name}</p>
-                            <p className="text-[0.7rem] text-brown-soft">{p.grade} • {p.category}</p>
+                            <p className="font-bold text-brown dark:text-[#f4f7f2] group-hover:text-leaf dark:group-hover:text-lime-soft transition-colors">{p.name}</p>
+                            <p className="text-[0.7rem] text-brown-soft dark:text-[#98a793]">{p.grade} • {p.category}</p>
                           </div>
                         </div>
-                        <span className="font-mono font-bold text-leaf text-xs">
+                        <span className="font-mono font-bold text-leaf dark:text-lime-soft text-xs">
                           {bdt(p.variants[0]?.price || 0)}+
                         </span>
                       </button>
@@ -171,7 +171,7 @@ export function QuickSearchModal({
               {/* Orders Results */}
               {searchResults.orders.length > 0 && (
                 <div>
-                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 mb-1.5 px-2">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mb-1.5 px-2">
                     Orders
                   </p>
                   <div className="space-y-1">
@@ -180,18 +180,18 @@ export function QuickSearchModal({
                         key={o.id}
                         type="button"
                         onClick={() => navigateTo("/admin/orders")}
-                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 text-left transition-colors group"
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 dark:hover:bg-white/[0.05] text-left transition-colors group"
                       >
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-leaf-deep">{o.id}</span>
-                            <span className="rounded bg-cream-2 px-1.5 py-0.2 text-[0.65rem] font-semibold">
+                            <span className="font-mono font-bold text-leaf-deep dark:text-lime-soft">{o.id}</span>
+                            <span className="rounded bg-cream-2 dark:bg-white/[0.08] px-1.5 py-0.2 text-[0.65rem] font-semibold text-brown dark:text-[#f4f7f2]">
                               {o.status.toUpperCase()}
                             </span>
                           </div>
-                          <p className="text-brown font-semibold">{o.customer.name} ({o.customer.city})</p>
+                          <p className="text-brown dark:text-[#f4f7f2] font-semibold">{o.customer.name} ({o.customer.city})</p>
                         </div>
-                        <span className="font-mono font-bold text-brown">{bdt(o.total)}</span>
+                        <span className="font-mono font-bold text-brown dark:text-[#f4f7f2]">{bdt(o.total)}</span>
                       </button>
                     ))}
                   </div>
@@ -201,7 +201,7 @@ export function QuickSearchModal({
               {/* Customers Results */}
               {searchResults.customers.length > 0 && (
                 <div>
-                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 mb-1.5 px-2">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mb-1.5 px-2">
                     Customers & Buyers
                   </p>
                   <div className="space-y-1">
@@ -210,13 +210,13 @@ export function QuickSearchModal({
                         key={c.id}
                         type="button"
                         onClick={() => navigateTo("/admin/customers")}
-                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 text-left transition-colors group"
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 dark:hover:bg-white/[0.05] text-left transition-colors group"
                       >
                         <div>
-                          <p className="font-bold text-brown group-hover:text-leaf transition-colors">{c.name}</p>
-                          <p className="text-[0.7rem] text-brown-soft font-mono">{c.phone} • {c.buyerType}</p>
+                          <p className="font-bold text-brown dark:text-[#f4f7f2] group-hover:text-leaf dark:group-hover:text-lime-soft transition-colors">{c.name}</p>
+                          <p className="text-[0.7rem] text-brown-soft dark:text-[#98a793] font-mono">{c.phone} • {c.buyerType}</p>
                         </div>
-                        <span className="text-[0.7rem] font-mono text-leaf font-bold">
+                        <span className="text-[0.7rem] font-mono text-leaf dark:text-lime-soft font-bold">
                           {c.totalKg} kg ({bdt(c.totalSpent)})
                         </span>
                       </button>
@@ -228,7 +228,7 @@ export function QuickSearchModal({
               {/* Tea Lots Results */}
               {searchResults.lots.length > 0 && (
                 <div>
-                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 mb-1.5 px-2">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mb-1.5 px-2">
                     Garden Tea Lots
                   </p>
                   <div className="space-y-1">
@@ -237,13 +237,13 @@ export function QuickSearchModal({
                         key={l.id}
                         type="button"
                         onClick={() => navigateTo("/admin/inventory")}
-                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 text-left transition-colors group"
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-cream/50 dark:hover:bg-white/[0.05] text-left transition-colors group"
                       >
                         <div>
-                          <p className="font-bold text-brown">{l.garden}</p>
-                          <p className="text-[0.7rem] text-brown-soft font-mono">{l.id} • {l.grade}</p>
+                          <p className="font-bold text-brown dark:text-[#f4f7f2]">{l.garden}</p>
+                          <p className="text-[0.7rem] text-brown-soft dark:text-[#98a793] font-mono">{l.id} • {l.grade}</p>
                         </div>
-                        <span className="font-mono text-xs font-bold text-leaf">{l.remainingKg} kg left</span>
+                        <span className="font-mono text-xs font-bold text-leaf dark:text-lime-soft">{l.remainingKg} kg left</span>
                       </button>
                     ))}
                   </div>
@@ -254,7 +254,7 @@ export function QuickSearchModal({
                 searchResults.orders.length === 0 &&
                 searchResults.customers.length === 0 &&
                 searchResults.lots.length === 0 && (
-                  <div className="py-8 text-center text-brown-soft">
+                  <div className="py-8 text-center text-brown-soft dark:text-[#98a793]">
                     <p className="font-bold">No results found for &ldquo;{query}&rdquo;</p>
                     <p className="text-[0.7rem] mt-1">Try searching by order ID, tea name, or customer phone.</p>
                   </div>
@@ -262,7 +262,7 @@ export function QuickSearchModal({
             </div>
           ) : (
             <div>
-              <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 mb-2 px-2">
+              <p className="text-[0.68rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mb-2 px-2">
                 Quick Navigation
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
@@ -273,17 +273,17 @@ export function QuickSearchModal({
                       key={page.path}
                       type="button"
                       onClick={() => navigateTo(page.path)}
-                      className="flex items-center justify-between p-2.5 rounded-xl border border-transparent hover:border-line hover:bg-cream/40 text-left transition-all group"
+                      className="flex items-center justify-between p-2.5 rounded-xl border border-transparent hover:border-line dark:hover:border-white/[0.08] hover:bg-cream/40 dark:hover:bg-white/[0.05] text-left transition-all group"
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="size-7 rounded-lg bg-cream flex items-center justify-center text-leaf group-hover:bg-leaf group-hover:text-cream transition-colors">
+                        <div className="size-7 rounded-lg bg-cream dark:bg-[#1a2219] flex items-center justify-center text-leaf dark:text-lime-soft group-hover:bg-leaf group-hover:text-cream transition-colors">
                           <Icon className="size-3.5" />
                         </div>
-                        <span className="font-semibold text-brown group-hover:text-leaf-deep transition-colors">
+                        <span className="font-semibold text-brown dark:text-[#f4f7f2] group-hover:text-leaf-deep dark:group-hover:text-lime-soft transition-colors">
                           {page.label}
                         </span>
                       </div>
-                      <ArrowRight className="size-3.5 text-brown-soft/50 group-hover:text-leaf group-hover:translate-x-0.5 transition-all" />
+                      <ArrowRight className="size-3.5 text-brown-soft/50 dark:text-[#98a793]/50 group-hover:text-leaf dark:group-hover:text-lime-soft group-hover:translate-x-0.5 transition-all" />
                     </button>
                   );
                 })}
@@ -293,7 +293,7 @@ export function QuickSearchModal({
         </div>
 
         {/* Footer Shortcut Helper */}
-        <div className="px-4 py-2.5 border-t border-line bg-cream/20 flex items-center justify-between text-[0.7rem] text-brown-soft">
+        <div className="px-4 py-2.5 border-t border-line dark:border-white/[0.08] bg-cream/20 dark:bg-white/[0.02] flex items-center justify-between text-[0.7rem] text-brown-soft dark:text-[#98a793]">
           <span>Navigate with mouse or keyboard</span>
           <span className="font-mono">Cha Nir OS v2.4</span>
         </div>

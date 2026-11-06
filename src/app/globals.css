@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-leaf: #536d3b;
   --color-leaf-deep: #2f3f21;
@@ -173,6 +175,60 @@ select {
   background: #fffdf6;
   border: 1px solid var(--color-line);
   border-radius: 1.5rem;
+}
+
+/* Dark mode component & variable adaptations */
+:root {
+  --chart-track: #efebd9;
+}
+
+.dark {
+  --chart-track: #232c21;
+}
+
+.dark .field {
+  background: #151d15;
+  color: #f4f7f2;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.dark .field:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.dark .field:focus {
+  border-color: #7da34b;
+  box-shadow: 0 0 0 3px rgba(165, 190, 22, 0.25);
+}
+
+.dark .card {
+  background: #141a14;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f4f7f2;
+}
+
+.dark .btn-ghost {
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #f4f7f2;
+  background-color: transparent;
+}
+.dark .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f7f2;
+}
+
+/* Dark mode custom scrollbars */
+.dark ::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.dark ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 @keyframes marquee {

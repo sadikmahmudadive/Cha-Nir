@@ -19,11 +19,11 @@ export function PackingSlipModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-3xl rounded-2xl bg-white shadow-2xl my-8 overflow-hidden print:m-0 print:p-0 print:shadow-none print:w-full print:max-w-none">
+      <div className="relative w-full max-w-3xl rounded-2xl bg-white shadow-2xl my-8 overflow-hidden print:m-0 print:p-0 print:shadow-none print:w-full print:max-w-none border border-line dark:border-white/[0.1]">
         {/* Modal Controls (Hidden in print) */}
-        <div className="flex items-center justify-between border-b border-line bg-cream/50 px-6 py-4 print:hidden">
+        <div className="flex items-center justify-between border-b border-line dark:border-white/[0.08] bg-cream/50 dark:bg-[#161d15] px-6 py-4 print:hidden">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-brown">Warehouse Packing Slip & Invoice</span>
+            <span className="font-bold text-brown dark:text-[#f4f7f2]">Warehouse Packing Slip & Invoice</span>
             <span className="rounded bg-leaf px-2 py-0.5 text-xs font-bold text-cream">
               {order.id}
             </span>
@@ -41,7 +41,7 @@ export function PackingSlipModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-1.5 text-brown-soft hover:bg-cream"
+              className="rounded-lg p-1.5 text-brown-soft dark:text-[#98a793] hover:bg-cream dark:hover:bg-white/[0.06] hover:text-brown dark:hover:text-[#f4f7f2]"
             >
               <X className="size-5" />
             </button>

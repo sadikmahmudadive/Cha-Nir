@@ -74,19 +74,19 @@ export default function AdminOrdersPage() {
       {/* Search & Matching Stats Banner */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-brown-soft" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-brown-soft dark:text-[#98a793]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search Order ID, stall name, phone, or destination..."
-            className="w-full rounded-xl border border-black/[0.08] bg-white pl-10 pr-9 py-2 text-xs text-brown focus:border-leaf focus:outline-hidden shadow-2xs"
+            className="w-full rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151c14] pl-10 pr-9 py-2 text-xs text-brown dark:text-[#f4f7f2] placeholder:text-brown-soft/60 dark:placeholder:text-[#98a793]/60 focus:border-leaf dark:focus:border-leaf focus:outline-hidden shadow-2xs"
           />
           {search && (
             <button
               type="button"
               onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-brown-soft hover:text-brown rounded-md"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2] rounded-md"
             >
               <X className="size-3.5" />
             </button>
@@ -94,13 +94,13 @@ export default function AdminOrdersPage() {
         </div>
 
         {/* Live Filter Totals Ticker */}
-        <div className="flex items-center gap-3 text-xs bg-cream/60 border border-black/[0.06] px-4 py-2 rounded-xl shadow-2xs">
-          <span className="font-semibold text-brown-soft">Matching:</span>
-          <span className="font-bold text-brown">{filteredOrders.length} orders</span>
-          <span className="text-black/20">|</span>
-          <span className="font-mono font-bold text-leaf">{totalFilteredKg} kg</span>
-          <span className="text-black/20">|</span>
-          <span className="font-mono font-bold text-leaf-deep">{bdt(totalFilteredAmount)}</span>
+        <div className="flex items-center gap-3 text-xs bg-cream/60 dark:bg-[#161d15] border border-black/[0.06] dark:border-white/[0.07] px-4 py-2 rounded-xl shadow-2xs text-brown-soft dark:text-[#98a793]">
+          <span className="font-semibold">Matching:</span>
+          <span className="font-bold text-brown dark:text-[#f4f7f2]">{filteredOrders.length} orders</span>
+          <span className="text-black/20 dark:text-white/20">|</span>
+          <span className="font-mono font-bold text-leaf dark:text-lime-soft">{totalFilteredKg} kg</span>
+          <span className="text-black/20 dark:text-white/20">|</span>
+          <span className="font-mono font-bold text-leaf-deep dark:text-lime-soft">{bdt(totalFilteredAmount)}</span>
         </div>
       </div>
 
@@ -118,14 +118,14 @@ export default function AdminOrdersPage() {
                 onClick={() => setStatusFilter(tab.value)}
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
                   on
-                    ? "bg-leaf text-cream shadow-xs"
-                    : "bg-white border border-black/[0.08] text-brown-soft hover:bg-cream hover:text-brown"
+                    ? "bg-leaf text-cream dark:bg-leaf dark:text-[#f4f7f2] shadow-xs"
+                    : "bg-white dark:bg-[#161d15] border border-black/[0.08] dark:border-white/[0.08] text-brown-soft dark:text-[#98a793] hover:bg-cream dark:hover:bg-white/[0.06] hover:text-brown dark:hover:text-[#f4f7f2]"
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
                   className={`rounded-full px-1.5 py-0.2 text-[0.65rem] font-mono ${
-                    on ? "bg-cream text-leaf-deep" : "bg-cream-2 text-brown"
+                    on ? "bg-cream dark:bg-lime/20 text-leaf-deep dark:text-lime-soft" : "bg-cream-2 dark:bg-white/[0.08] text-brown dark:text-[#f4f7f2]"
                   }`}
                 >
                   {count}
@@ -137,7 +137,7 @@ export default function AdminOrdersPage() {
 
         {/* Buyer Channel Filter Pills */}
         <div className="flex gap-1.5 overflow-x-auto pt-0.5 pb-1 [scrollbar-width:none] text-[0.75rem]">
-          <span className="flex items-center text-brown-soft font-bold text-[0.68rem] uppercase mr-1">
+          <span className="flex items-center text-brown-soft dark:text-[#98a793] font-bold text-[0.68rem] uppercase mr-1">
             Channel:
           </span>
           {BUYER_TABS.map((b) => {
@@ -150,8 +150,8 @@ export default function AdminOrdersPage() {
                 onClick={() => setBuyerFilter(b.value)}
                 className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 font-semibold transition-all shrink-0 ${
                   on
-                    ? "bg-brown text-cream shadow-2xs"
-                    : "bg-cream/40 text-brown-soft hover:bg-cream-2 hover:text-brown"
+                    ? "bg-brown dark:bg-leaf text-cream dark:text-[#f4f7f2] shadow-2xs"
+                    : "bg-cream/40 dark:bg-white/[0.04] text-brown-soft dark:text-[#98a793] hover:bg-cream-2 dark:hover:bg-white/[0.08] hover:text-brown dark:hover:text-[#f4f7f2]"
                 }`}
               >
                 {Icon && <Icon className="size-3" />}
@@ -163,11 +163,11 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Orders Table */}
-      <div className="rounded-2xl border border-black/[0.08] bg-white shadow-2xs overflow-hidden">
+      <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-black/[0.06] bg-cream/40 font-bold text-brown uppercase text-[0.68rem] tracking-wider">
+              <tr className="border-b border-black/[0.06] dark:border-white/[0.07] bg-cream/40 dark:bg-[#182017] font-bold text-brown dark:text-[#f4f7f2] uppercase text-[0.68rem] tracking-wider">
                 <th className="py-3 px-4">Order ID & Date</th>
                 <th className="py-3 px-4">Customer & Channel</th>
                 <th className="py-3 px-4">Teas & Weight</th>
@@ -177,12 +177,12 @@ export default function AdminOrdersPage() {
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/[0.05]">
+            <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.06]">
               {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-brown-soft">
-                    <Package className="size-8 mx-auto text-line mb-2" />
-                    <p className="font-bold">No orders match the selected filters</p>
+                  <td colSpan={7} className="py-12 text-center text-brown-soft dark:text-[#98a793]">
+                    <Package className="size-8 mx-auto text-line dark:text-white/20 mb-2" />
+                    <p className="font-bold text-brown dark:text-[#f4f7f2]">No orders match the selected filters</p>
                     <button
                       type="button"
                       onClick={() => {
@@ -190,7 +190,7 @@ export default function AdminOrdersPage() {
                         setBuyerFilter("all");
                         setSearch("");
                       }}
-                      className="mt-2 text-xs font-bold text-leaf hover:underline"
+                      className="mt-2 text-xs font-bold text-leaf dark:text-lime-soft hover:underline"
                     >
                       Reset all filters
                     </button>
@@ -198,11 +198,11 @@ export default function AdminOrdersPage() {
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-cream/15 transition-colors">
+                  <tr key={order.id} className="hover:bg-cream/15 dark:hover:bg-white/[0.03] transition-colors">
                     {/* Order ID & Date */}
                     <td className="py-3.5 px-4">
-                      <p className="font-mono font-bold text-leaf-deep text-sm">{order.id}</p>
-                      <p className="text-[0.68rem] text-brown-soft">
+                      <p className="font-mono font-bold text-leaf-deep dark:text-lime-soft text-sm">{order.id}</p>
+                      <p className="text-[0.68rem] text-brown-soft dark:text-[#98a793]">
                         {new Date(order.createdAt).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
@@ -214,9 +214,9 @@ export default function AdminOrdersPage() {
 
                     {/* Customer */}
                     <td className="py-3.5 px-4 max-w-xs">
-                      <p className="font-bold text-brown truncate">{order.customer.name}</p>
-                      <p className="text-[0.68rem] text-leaf font-medium">{order.customer.phone}</p>
-                      <p className="text-[0.68rem] text-brown-soft truncate">{order.customer.city}</p>
+                      <p className="font-bold text-brown dark:text-[#f4f7f2] truncate">{order.customer.name}</p>
+                      <p className="text-[0.68rem] text-leaf dark:text-lime-soft font-medium">{order.customer.phone}</p>
+                      <p className="text-[0.68rem] text-brown-soft dark:text-[#98a793] truncate">{order.customer.city}</p>
                       <div className="mt-1">
                         <BuyerTypeBadge type={order.customer.buyerType} />
                       </div>
@@ -226,35 +226,35 @@ export default function AdminOrdersPage() {
                     <td className="py-3.5 px-4 max-w-sm">
                       <div className="space-y-0.5">
                         {order.items.map((item, idx) => (
-                          <p key={idx} className="text-xs text-brown line-clamp-1">
+                          <p key={idx} className="text-xs text-brown dark:text-[#f4f7f2] line-clamp-1">
                             <span className="font-semibold">{item.qty}×</span> {item.productName}{" "}
-                            <span className="text-[0.68rem] text-brown-soft">({item.variantLabel})</span>
+                            <span className="text-[0.68rem] text-brown-soft dark:text-[#98a793]">({item.variantLabel})</span>
                           </p>
                         ))}
                       </div>
-                      <p className="font-mono font-bold text-[0.72rem] text-leaf mt-1">
+                      <p className="font-mono font-bold text-[0.72rem] text-leaf dark:text-lime-soft mt-1">
                         Gross Weight: {order.totalKg} kg
                       </p>
                     </td>
 
                     {/* Financials */}
                     <td className="py-3.5 px-4 text-right">
-                      <p className="font-mono font-bold text-sm text-brown">{bdt(order.total)}</p>
+                      <p className="font-mono font-bold text-sm text-brown dark:text-[#f4f7f2]">{bdt(order.total)}</p>
                       {order.discount > 0 && (
-                        <p className="text-[0.65rem] text-emerald-700 font-bold">
+                        <p className="text-[0.65rem] text-emerald-700 dark:text-emerald-400 font-bold">
                           Tier -{bdt(order.discount)}
                         </p>
                       )}
-                      <p className="text-[0.68rem] text-brown-soft">
+                      <p className="text-[0.68rem] text-brown-soft dark:text-[#98a793]">
                         {order.paymentMethod}
                       </p>
                     </td>
 
                     {/* Courier & COD */}
                     <td className="py-3.5 px-4">
-                      <p className="font-semibold text-xs text-brown">{order.courier.partner}</p>
+                      <p className="font-semibold text-xs text-brown dark:text-[#f4f7f2]">{order.courier.partner}</p>
                       {order.courier.trackingCode && (
-                        <p className="font-mono text-[0.68rem] text-brown-soft truncate max-w-[120px]">
+                        <p className="font-mono text-[0.68rem] text-brown-soft dark:text-[#98a793] truncate max-w-[120px]">
                           {order.courier.trackingCode}
                         </p>
                       )}
@@ -272,7 +272,7 @@ export default function AdminOrdersPage() {
                           onChange={(e) =>
                             erpActions.updateOrderStatus(order.id, e.target.value as OrderStatus)
                           }
-                          className="w-full rounded-lg border border-black/[0.1] p-1 text-[0.7rem] font-semibold bg-white focus:border-leaf"
+                          className="w-full rounded-lg border border-black/[0.1] dark:border-white/[0.1] p-1 text-[0.7rem] font-semibold bg-white dark:bg-[#161d15] text-brown dark:text-[#f4f7f2] focus:border-leaf"
                         >
                           <option value="pending">Pending</option>
                           <option value="processing">Processing / Packing</option>
@@ -289,7 +289,7 @@ export default function AdminOrdersPage() {
                         <button
                           type="button"
                           onClick={() => setSelectedSlipOrder(order)}
-                          className="rounded-lg border border-black/[0.08] hover:border-leaf p-1.5 text-brown-soft hover:text-brown hover:bg-cream transition-colors"
+                          className="rounded-lg border border-black/[0.08] dark:border-white/[0.08] hover:border-leaf dark:hover:border-leaf p-1.5 text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2] hover:bg-cream dark:hover:bg-white/[0.06] transition-colors"
                           title="Print Packing Slip / Commercial Invoice"
                         >
                           <Printer className="size-4" />

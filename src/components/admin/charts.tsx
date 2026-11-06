@@ -41,7 +41,7 @@ export function RadialRing({
   stroke = 8,
   color = CHART_COLORS.leaf,
   colorTo,
-  trackColor = CHART_COLORS.cream2,
+  trackColor = "var(--chart-track, #efebd9)",
   children,
 }: {
   value: number;
@@ -111,7 +111,7 @@ export function DonutChart({
   thickness = 11,
   centerValue,
   centerLabel,
-  trackColor = CHART_COLORS.cream2,
+  trackColor = "var(--chart-track, #efebd9)",
 }: {
   segments: DonutSegment[];
   size?: number;
@@ -175,22 +175,22 @@ export function DonutChart({
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center leading-tight px-1.5">
         {focused ? (
           <>
-            <span className={`font-mono font-extrabold text-brown ${big ? "text-base sm:text-lg" : "text-[0.78rem]"}`}>
+            <span className={`font-mono font-extrabold text-brown dark:text-[#f4f7f2] ${big ? "text-base sm:text-lg" : "text-[0.78rem]"}`}>
               {focused.display ?? focused.value}
             </span>
-            <span className={`truncate max-w-full font-semibold text-brown-soft ${big ? "text-[0.68rem]" : "text-[0.56rem]"}`}>
+            <span className={`truncate max-w-full font-semibold text-brown-soft dark:text-[#98a793] ${big ? "text-[0.68rem]" : "text-[0.56rem]"}`}>
               {focused.label}
             </span>
           </>
         ) : (
           <>
             {centerValue !== undefined && (
-              <span className={`font-mono font-extrabold text-brown ${big ? "text-2xl" : "text-sm"}`}>
+              <span className={`font-mono font-extrabold text-brown dark:text-[#f4f7f2] ${big ? "text-2xl" : "text-sm"}`}>
                 {centerValue}
               </span>
             )}
             {centerLabel && (
-              <span className={`font-semibold uppercase tracking-wider text-brown-soft/80 ${big ? "text-[0.6rem]" : "text-[0.52rem]"}`}>
+              <span className={`font-semibold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] ${big ? "text-[0.6rem]" : "text-[0.52rem]"}`}>
                 {centerLabel}
               </span>
             )}
@@ -301,9 +301,9 @@ export function ChartLegend({
         <li key={item.label} className="flex items-center justify-between gap-2 text-[0.72rem]">
           <span className="flex min-w-0 items-center gap-1.5">
             <span className="size-2 shrink-0 rounded-full" style={{ background: item.color }} />
-            <span className="truncate text-brown-soft font-medium">{item.label}</span>
+            <span className="truncate text-brown-soft dark:text-[#98a793] font-medium">{item.label}</span>
           </span>
-          <span className="shrink-0 font-mono font-bold text-brown">{item.value}</span>
+          <span className="shrink-0 font-mono font-bold text-brown dark:text-[#f4f7f2]">{item.value}</span>
         </li>
       ))}
     </ul>

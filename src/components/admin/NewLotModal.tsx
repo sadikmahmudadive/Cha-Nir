@@ -44,10 +44,10 @@ export function NewLotModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl my-8 overflow-hidden text-brown font-sans">
-        <div className="flex items-center justify-between border-b border-line bg-cream/50 px-6 py-4">
+      <div className="relative w-full max-w-lg rounded-2xl bg-white dark:bg-[#141a14] shadow-2xl my-8 overflow-hidden text-brown dark:text-[#f4f7f2] font-sans border border-line dark:border-white/[0.08]">
+        <div className="flex items-center justify-between border-b border-line dark:border-white/[0.08] bg-cream/50 dark:bg-white/[0.04] px-6 py-4">
           <h3 className="font-serif text-lg font-bold">Register Incoming Raw Tea Garden Lot</h3>
-          <button type="button" onClick={onClose} className="rounded-lg p-1.5 hover:bg-cream">
+          <button type="button" onClick={onClose} className="rounded-lg p-1.5 hover:bg-cream dark:hover:bg-white/[0.06] text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2]">
             <X className="size-5" />
           </button>
         </div>
@@ -61,7 +61,7 @@ export function NewLotModal({
               value={garden}
               onChange={(e) => setGarden(e.target.value)}
               placeholder="e.g. Finlay Tea Garden, Sreemangal"
-              className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30"
+              className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
             />
           </div>
 
@@ -71,7 +71,7 @@ export function NewLotModal({
               <select
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
               >
                 <option value="CTC BOP (Brokens)">CTC BOP (Brokens)</option>
                 <option value="Granular CTC Clean">Granular CTC Clean</option>
@@ -88,7 +88,7 @@ export function NewLotModal({
                 required
                 value={auctionInvoice}
                 onChange={(e) => setAuctionInvoice(e.target.value)}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 font-mono"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] font-mono"
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ export function NewLotModal({
                 required
                 value={initialKg}
                 onChange={(e) => setInitialKg(Number(e.target.value))}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 font-bold"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] font-bold"
               />
             </div>
 
@@ -114,7 +114,7 @@ export function NewLotModal({
                 required
                 value={costPerKg}
                 onChange={(e) => setCostPerKg(Number(e.target.value))}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 font-mono font-bold"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] font-mono font-bold"
               />
             </div>
           </div>
@@ -128,7 +128,7 @@ export function NewLotModal({
                 max={100}
                 value={cuppingScore}
                 onChange={(e) => setCuppingScore(Number(e.target.value))}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 font-bold"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] font-bold"
               />
             </div>
 
@@ -139,7 +139,7 @@ export function NewLotModal({
                 step="0.1"
                 value={moisturePct}
                 onChange={(e) => setMoisturePct(Number(e.target.value))}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 font-bold"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] font-bold"
               />
             </div>
           </div>
@@ -151,15 +151,15 @@ export function NewLotModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Strong maltiness, deep copper liquor, suitable for milk chai blending"
-              className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30"
+              className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-line">
+          <div className="flex justify-end gap-3 pt-3 border-t border-line dark:border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
-              className="btn btn-ghost border border-line text-xs px-4 py-2"
+              className="btn btn-ghost border border-line dark:border-white/[0.12] text-xs px-4 py-2 text-brown dark:text-[#f4f7f2]"
             >
               Cancel
             </button>

@@ -106,15 +106,14 @@ export default function AdminFinancePage() {
               stroke={12}
               color={CHART_COLORS.emerald}
               colorTo={CHART_COLORS.lime}
-              trackColor="#e4ead6"
             >
-              <span className="font-mono text-xl font-extrabold text-brown leading-none">
+              <span className="font-mono text-xl font-extrabold text-brown dark:text-[#f4f7f2] leading-none">
                 {Math.min(100, Math.round((totalRevenue / 150000) * 100))}%
               </span>
-              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">cleared</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mt-0.5">cleared</span>
             </RadialRing>
             <div className="min-w-0 flex-1">
-              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft">7-Day Inflows</p>
+              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft dark:text-[#98a793]">7-Day Inflows</p>
               <MiniSparklineBars data={REVENUE_SPARKLINE} height={50} />
             </div>
           </div>
@@ -188,21 +187,20 @@ export default function AdminFinancePage() {
               stroke={12}
               color={CHART_COLORS.leaf}
               colorTo={CHART_COLORS.lime}
-              trackColor="#e4ead6"
             >
-              <span className="font-mono text-xl font-extrabold text-brown leading-none">{profitMarginPct}%</span>
-              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">margin</span>
+              <span className="font-mono text-xl font-extrabold text-brown dark:text-[#f4f7f2] leading-none">{profitMarginPct}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mt-0.5">margin</span>
             </RadialRing>
             <div className="min-w-0 flex-1 space-y-1.5 text-xs">
-              <div className="flex items-center justify-between text-brown-soft">
+              <div className="flex items-center justify-between text-brown-soft dark:text-[#98a793]">
                 <span>Revenue:</span>
-                <span className="font-mono font-bold text-brown">{bdt(totalRevenue)}</span>
+                <span className="font-mono font-bold text-brown dark:text-[#f4f7f2]">{bdt(totalRevenue)}</span>
               </div>
-              <div className="flex items-center justify-between text-brown-soft">
+              <div className="flex items-center justify-between text-brown-soft dark:text-[#98a793]">
                 <span>COGS:</span>
-                <span className="font-mono font-bold text-rose-700">-{bdt(totalCogs)}</span>
+                <span className="font-mono font-bold text-rose-700 dark:text-rose-400">-{bdt(totalCogs)}</span>
               </div>
-              <div className="border-t border-black/[0.08] pt-1 flex items-center justify-between font-bold text-leaf-deep">
+              <div className="border-t border-black/[0.08] dark:border-white/[0.08] pt-1 flex items-center justify-between font-bold text-leaf-deep dark:text-[#c3d65a]">
                 <span>Net:</span>
                 <span className="font-mono">{bdt(netOperatingProfit)}</span>
               </div>
@@ -212,21 +210,21 @@ export default function AdminFinancePage() {
       </div>
 
       {/* Courier COD Reconciliation Section */}
-      <div className="rounded-2xl border border-black/[0.08] bg-white shadow-2xs overflow-hidden">
-        <div className="border-b border-black/[0.06] bg-cream/40 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] shadow-2xs overflow-hidden">
+        <div className="border-b border-black/[0.06] dark:border-white/[0.06] bg-cream/40 dark:bg-[#161d15] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-leaf-soft flex items-center justify-center text-leaf-deep">
+            <div className="size-9 rounded-xl bg-leaf-soft dark:bg-[#232c21] flex items-center justify-center text-leaf-deep dark:text-[#c3d65a]">
               <Truck className="size-5" />
             </div>
             <div>
-              <h3 className="font-serif text-lg font-bold text-brown">Courier COD Cash Reconciliation</h3>
-              <p className="text-xs text-brown-soft">
+              <h3 className="font-serif text-lg font-bold text-brown dark:text-[#f4f7f2]">Courier COD Cash Reconciliation</h3>
+              <p className="text-xs text-brown-soft dark:text-[#98a793]">
                 Match customer cash payments with courier remittance bank statements
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 self-start sm:self-auto bg-cream-2/70 p-1 rounded-xl border border-black/[0.06]">
+          <div className="flex items-center gap-1.5 self-start sm:self-auto bg-cream-2/70 dark:bg-[#111611] p-1 rounded-xl border border-black/[0.06] dark:border-white/[0.08]">
             {(["All", "Steadfast", "Pathao"] as const).map((p) => (
               <button
                 key={p}
@@ -235,7 +233,7 @@ export default function AdminFinancePage() {
                 className={`rounded-lg px-3 py-1 text-xs font-semibold transition-all ${
                   courierFilter === p
                     ? "bg-leaf text-cream shadow-2xs font-bold"
-                    : "text-brown-soft hover:text-brown"
+                    : "text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2]"
                 }`}
               >
                 {p}
@@ -247,7 +245,7 @@ export default function AdminFinancePage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-black/[0.06] bg-cream/20 font-bold text-brown uppercase text-[0.68rem] tracking-wider">
+              <tr className="border-b border-black/[0.06] dark:border-white/[0.06] bg-cream/20 dark:bg-[#161d15]/60 font-bold text-brown dark:text-[#f4f7f2] uppercase text-[0.68rem] tracking-wider">
                 <th className="py-3 px-4">Order ID & Date</th>
                 <th className="py-3 px-4">Buyer & Destination</th>
                 <th className="py-3 px-4">Courier Partner</th>
@@ -256,41 +254,41 @@ export default function AdminFinancePage() {
                 <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/[0.05]">
+            <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.05]">
               {filteredCodOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-10 text-center text-brown-soft">
-                    <CheckCircle2 className="size-7 mx-auto text-emerald-600 mb-1.5" />
-                    <p className="font-bold text-sm text-brown">All courier COD disbursements are fully settled!</p>
-                    <p className="text-xs text-brown-soft mt-0.5">No pending courier remittance payouts outstanding.</p>
+                  <td colSpan={6} className="py-10 text-center text-brown-soft dark:text-[#98a793]">
+                    <CheckCircle2 className="size-7 mx-auto text-emerald-600 dark:text-emerald-400 mb-1.5" />
+                    <p className="font-bold text-sm text-brown dark:text-[#f4f7f2]">All courier COD disbursements are fully settled!</p>
+                    <p className="text-xs text-brown-soft dark:text-[#98a793] mt-0.5">No pending courier remittance payouts outstanding.</p>
                   </td>
                 </tr>
               ) : (
                 filteredCodOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-cream/15 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-leaf-deep text-sm">
+                  <tr key={order.id} className="hover:bg-cream/15 dark:hover:bg-white/[0.03] transition-colors">
+                    <td className="py-3.5 px-4 font-mono font-bold text-leaf-deep dark:text-[#a5be16] text-sm">
                       {order.id}
-                      <p className="text-[0.65rem] text-brown-soft font-sans font-normal">
+                      <p className="text-[0.65rem] text-brown-soft dark:text-[#98a793] font-sans font-normal">
                         {new Date(order.createdAt).toLocaleDateString("en-GB")}
                       </p>
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <p className="font-bold text-brown">{order.customer.name}</p>
-                      <p className="text-[0.68rem] text-brown-soft">{order.customer.city} ({order.customer.buyerType})</p>
+                      <p className="font-bold text-brown dark:text-[#f4f7f2]">{order.customer.name}</p>
+                      <p className="text-[0.68rem] text-brown-soft dark:text-[#98a793]">{order.customer.city} ({order.customer.buyerType})</p>
                     </td>
 
-                    <td className="py-3.5 px-4 font-semibold text-brown">
-                      <span className="rounded-md bg-cream px-2 py-0.5 border border-black/[0.06]">
+                    <td className="py-3.5 px-4 font-semibold text-brown dark:text-[#f4f7f2]">
+                      <span className="rounded-md bg-cream dark:bg-[#1e271c] px-2 py-0.5 border border-black/[0.06] dark:border-white/[0.08]">
                         {order.courier.partner}
                       </span>
                     </td>
 
-                    <td className="py-3.5 px-4 font-mono text-brown-soft">
+                    <td className="py-3.5 px-4 font-mono text-brown-soft dark:text-[#98a793]">
                       {order.courier.trackingCode || "Awaiting Rider Pickup"}
                     </td>
 
-                    <td className="py-3.5 px-4 text-right font-mono font-bold text-sm text-brown">
+                    <td className="py-3.5 px-4 text-right font-mono font-bold text-sm text-brown dark:text-[#f4f7f2]">
                       {bdt(order.total)}
                     </td>
 
@@ -313,20 +311,20 @@ export default function AdminFinancePage() {
       </div>
 
       {/* General Financial Ledger */}
-      <div className="rounded-2xl border border-black/[0.08] bg-white shadow-2xs overflow-hidden">
-        <div className="border-b border-black/[0.06] bg-cream/40 px-6 py-4 flex justify-between items-center">
+      <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] shadow-2xs overflow-hidden">
+        <div className="border-b border-black/[0.06] dark:border-white/[0.06] bg-cream/40 dark:bg-[#161d15] px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-leaf-soft flex items-center justify-center text-leaf-deep">
+            <div className="size-9 rounded-xl bg-leaf-soft dark:bg-[#232c21] flex items-center justify-center text-leaf-deep dark:text-[#c3d65a]">
               <Receipt className="size-5" />
             </div>
             <div>
-              <h3 className="font-serif text-lg font-bold text-brown">General Accounts & Expense Ledger</h3>
-              <p className="text-xs text-brown-soft">
+              <h3 className="font-serif text-lg font-bold text-brown dark:text-[#f4f7f2]">General Accounts & Expense Ledger</h3>
+              <p className="text-xs text-brown-soft dark:text-[#98a793]">
                 Operating cashflows, garden lot purchases, packaging costs & settled revenue
               </p>
             </div>
           </div>
-          <span className="font-mono text-xs font-bold text-leaf bg-cream px-3 py-1 rounded-full border border-black/[0.08]">
+          <span className="font-mono text-xs font-bold text-leaf dark:text-[#c3d65a] bg-cream dark:bg-[#1e271c] px-3 py-1 rounded-full border border-black/[0.08] dark:border-white/[0.08]">
             {transactions.length} Entries
           </span>
         </div>
@@ -334,7 +332,7 @@ export default function AdminFinancePage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-black/[0.06] bg-cream/20 font-bold text-brown uppercase text-[0.68rem] tracking-wider">
+              <tr className="border-b border-black/[0.06] dark:border-white/[0.06] bg-cream/20 dark:bg-[#161d15]/60 font-bold text-brown dark:text-[#f4f7f2] uppercase text-[0.68rem] tracking-wider">
                 <th className="py-3 px-4">Date</th>
                 <th className="py-3 px-4">Transaction / Memo</th>
                 <th className="py-3 px-4">Type</th>
@@ -343,28 +341,28 @@ export default function AdminFinancePage() {
                 <th className="py-3 px-4 text-center">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-black/[0.05]">
+            <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.05]">
               {transactions.map((tx) => {
                 const isRevenue = tx.category === "Revenue";
                 return (
-                  <tr key={tx.id} className="hover:bg-cream/15 transition-colors">
-                    <td className="py-3.5 px-4 font-mono text-brown-soft">{tx.date}</td>
-                    <td className="py-3.5 px-4 font-bold text-brown">{tx.title}</td>
+                  <tr key={tx.id} className="hover:bg-cream/15 dark:hover:bg-white/[0.03] transition-colors">
+                    <td className="py-3.5 px-4 font-mono text-brown-soft dark:text-[#98a793]">{tx.date}</td>
+                    <td className="py-3.5 px-4 font-bold text-brown dark:text-[#f4f7f2]">{tx.title}</td>
                     <td className="py-3.5 px-4">
                       <span
                         className={`rounded-md px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${
                           isRevenue
-                            ? "bg-emerald-500/10 text-emerald-800 border border-emerald-400/25"
-                            : "bg-rose-500/10 text-rose-800 border border-rose-400/25"
+                            ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-400/25"
+                            : "bg-rose-500/10 text-rose-800 dark:text-rose-400 border border-rose-400/25"
                         }`}
                       >
                         {tx.category}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-brown-soft">{tx.referenceId || "—"}</td>
+                    <td className="py-3.5 px-4 font-mono text-brown-soft dark:text-[#98a793]">{tx.referenceId || "—"}</td>
                     <td
                       className={`py-3.5 px-4 text-right font-mono font-bold text-sm ${
-                        isRevenue ? "text-emerald-700" : "text-rose-700"
+                        isRevenue ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"
                       }`}
                     >
                       {isRevenue ? `+${bdt(tx.amount)}` : `-${bdt(tx.amount)}`}
@@ -373,8 +371,8 @@ export default function AdminFinancePage() {
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[0.68rem] font-bold ${
                           tx.status === "cleared"
-                            ? "bg-emerald-500/10 text-emerald-800 border border-emerald-400/25"
-                            : "bg-amber-500/10 text-amber-800 border border-amber-400/25"
+                            ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-400/25"
+                            : "bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-400/25"
                         }`}
                       >
                         {tx.status === "cleared" ? "Cleared" : "Pending"}

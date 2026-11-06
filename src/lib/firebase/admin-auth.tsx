@@ -62,11 +62,11 @@ export const ROLE_DESCRIPTIONS: Record<AdminRole, string> = {
 };
 
 export const ROLE_COLORS: Record<AdminRole, { badge: string; dot: string }> = {
-  super_admin: { badge: "bg-purple-500/15 text-purple-900 border-purple-500/30", dot: "bg-purple-600" },
-  admin: { badge: "bg-leaf-soft text-leaf-deep border-leaf/25", dot: "bg-leaf" },
-  operations_manager: { badge: "bg-amber-500/15 text-amber-900 border-amber-500/30", dot: "bg-amber-600" },
-  finance_manager: { badge: "bg-emerald-500/15 text-emerald-900 border-emerald-500/30", dot: "bg-emerald-600" },
-  viewer: { badge: "bg-stone-500/15 text-stone-800 border-stone-500/30", dot: "bg-stone-500" },
+  super_admin: { badge: "bg-purple-500/15 text-purple-900 dark:text-purple-300 border-purple-500/30 dark:border-purple-400/40", dot: "bg-purple-600 dark:bg-purple-400" },
+  admin: { badge: "bg-leaf-soft text-leaf-deep dark:bg-leaf/25 dark:text-lime-soft border-leaf/25 dark:border-leaf/40", dot: "bg-leaf dark:bg-lime" },
+  operations_manager: { badge: "bg-amber-500/15 text-amber-900 dark:text-amber-300 border-amber-500/30 dark:border-amber-400/40", dot: "bg-amber-600 dark:bg-amber-400" },
+  finance_manager: { badge: "bg-emerald-500/15 text-emerald-900 dark:text-emerald-300 border-emerald-500/30 dark:border-emerald-400/40", dot: "bg-emerald-600 dark:bg-emerald-400" },
+  viewer: { badge: "bg-stone-500/15 text-stone-800 dark:text-stone-300 border-stone-500/30 dark:border-stone-400/40", dot: "bg-stone-500 dark:bg-stone-400" },
 };
 
 /** Default hardcoded Superadmin credentials requested by the user */

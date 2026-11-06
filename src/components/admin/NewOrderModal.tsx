@@ -159,10 +159,10 @@ export function NewOrderModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl my-8 overflow-hidden text-brown font-sans">
-        <div className="flex items-center justify-between border-b border-line bg-cream/50 px-6 py-4">
+      <div className="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-[#141a14] shadow-2xl my-8 overflow-hidden text-brown dark:text-[#f4f7f2] font-sans border border-line dark:border-white/[0.08]">
+        <div className="flex items-center justify-between border-b border-line dark:border-white/[0.08] bg-cream/50 dark:bg-white/[0.04] px-6 py-4">
           <h3 className="font-serif text-lg font-bold">Create New Commercial / Wholesale Order</h3>
-          <button type="button" onClick={onClose} className="rounded-lg p-1.5 hover:bg-cream">
+          <button type="button" onClick={onClose} className="rounded-lg p-1.5 hover:bg-cream dark:hover:bg-white/[0.06] text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2]">
             <X className="size-5" />
           </button>
         </div>
@@ -178,7 +178,7 @@ export function NewOrderModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Al-Amin Tea Stall"
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 focus:border-leaf"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] focus:border-leaf"
               />
             </div>
 
@@ -190,7 +190,7 @@ export function NewOrderModal({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="01712 345678"
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 focus:border-leaf"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] focus:border-leaf"
               />
             </div>
 
@@ -199,7 +199,7 @@ export function NewOrderModal({
               <select
                 value={buyerType}
                 onChange={(e) => setBuyerType(e.target.value as BuyerType)}
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
               >
                 {BUYER_TYPES.map((b) => (
                   <option key={b} value={b}>{b}</option>
@@ -214,7 +214,7 @@ export function NewOrderModal({
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Dhaka, Sylhet, Chittagong..."
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 focus:border-leaf"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] focus:border-leaf"
               />
             </div>
 
@@ -226,19 +226,19 @@ export function NewOrderModal({
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Full stall counter, shop number, or hotel address"
-                className="w-full rounded-xl border border-line p-2.5 text-xs bg-cream/30 focus:border-leaf"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2.5 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2] focus:border-leaf"
               />
             </div>
           </div>
 
           {/* Line items */}
-          <div className="border-t border-line pt-4">
+          <div className="border-t border-line dark:border-white/[0.08] pt-4">
             <div className="flex justify-between items-center mb-2">
               <span className="font-bold text-sm">Order Items & Tea Packs</span>
               <button
                 type="button"
                 onClick={addItem}
-                className="btn btn-ghost border border-line text-xs py-1 px-2.5 rounded-lg flex items-center gap-1"
+                className="btn btn-ghost border border-line dark:border-white/[0.12] text-xs py-1 px-2.5 rounded-lg flex items-center gap-1 text-brown dark:text-[#f4f7f2]"
               >
                 <Plus className="size-3.5" />
                 <span>Add Item</span>
@@ -249,14 +249,14 @@ export function NewOrderModal({
               {items.map((item, index) => {
                 const selectedProduct = PRODUCTS.find((p) => p.slug === item.slug) || PRODUCTS[0];
                 return (
-                  <div key={index} className="flex flex-wrap sm:flex-nowrap items-center gap-2 p-2.5 rounded-xl border border-line bg-cream/20">
+                  <div key={index} className="flex flex-wrap sm:flex-nowrap items-center gap-2 p-2.5 rounded-xl border border-line dark:border-white/[0.08] bg-cream/20 dark:bg-white/[0.03]">
                     <select
                       value={item.slug}
                       onChange={(e) => {
                         const newP = PRODUCTS.find((x) => x.slug === e.target.value) || PRODUCTS[0];
                         updateItem(index, newP.slug, newP.variants[0].id, item.qty);
                       }}
-                      className="flex-1 rounded-lg border border-line p-1.5 text-xs bg-white"
+                      className="flex-1 rounded-lg border border-line dark:border-white/[0.1] p-1.5 text-xs bg-white dark:bg-[#151c14] text-brown dark:text-[#f4f7f2]"
                     >
                       {PRODUCTS.map((p) => (
                         <option key={p.slug} value={p.slug}>{p.name}</option>
@@ -266,7 +266,7 @@ export function NewOrderModal({
                     <select
                       value={item.variantId}
                       onChange={(e) => updateItem(index, item.slug, e.target.value, item.qty)}
-                      className="w-28 rounded-lg border border-line p-1.5 text-xs bg-white"
+                      className="w-28 rounded-lg border border-line dark:border-white/[0.1] p-1.5 text-xs bg-white dark:bg-[#151c14] text-brown dark:text-[#f4f7f2]"
                     >
                       {selectedProduct.variants.map((v) => (
                         <option key={v.id} value={v.id}>{v.label} ({bdt(v.price)})</option>
@@ -278,10 +278,10 @@ export function NewOrderModal({
                       min={1}
                       value={item.qty}
                       onChange={(e) => updateItem(index, item.slug, item.variantId, Number(e.target.value))}
-                      className="w-16 rounded-lg border border-line p-1.5 text-xs text-center font-bold bg-white"
+                      className="w-16 rounded-lg border border-line dark:border-white/[0.1] p-1.5 text-xs text-center font-bold bg-white dark:bg-[#151c14] text-brown dark:text-[#f4f7f2]"
                     />
 
-                    <span className="w-20 font-mono font-bold text-right text-xs">
+                    <span className="w-20 font-mono font-bold text-right text-xs text-brown dark:text-[#f4f7f2]">
                       {bdt(item.total)}
                     </span>
 
@@ -289,7 +289,7 @@ export function NewOrderModal({
                       <button
                         type="button"
                         onClick={() => removeItem(index)}
-                        className="p-1 text-rose-600 hover:bg-rose-50 rounded"
+                        className="p-1 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -301,13 +301,13 @@ export function NewOrderModal({
           </div>
 
           {/* Fulfillment & Payment */}
-          <div className="grid grid-cols-2 gap-4 border-t border-line pt-4">
+          <div className="grid grid-cols-2 gap-4 border-t border-line dark:border-white/[0.08] pt-4">
             <div>
               <label className="block font-bold mb-1">Courier Partner</label>
               <select
                 value={courier}
                 onChange={(e) => setCourier(e.target.value as CourierPartner)}
-                className="w-full rounded-xl border border-line p-2 text-xs bg-cream/30"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
               >
                 {COURIERS.map((c) => (
                   <option key={c} value={c}>{c}</option>
@@ -322,7 +322,7 @@ export function NewOrderModal({
                 onChange={(e) =>
                   setPaymentMethod(e.target.value as "COD" | "bKash" | "Bank Transfer")
                 }
-                className="w-full rounded-xl border border-line p-2 text-xs bg-cream/30"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
               >
                 <option value="COD">Cash On Delivery (COD)</option>
                 <option value="bKash">bKash Merchant Pay</option>
@@ -337,30 +337,30 @@ export function NewOrderModal({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="e.g. Heavy-duty poly woven sack, deliver before 10 AM"
-                className="w-full rounded-xl border border-line p-2 text-xs bg-cream/30"
+                className="w-full rounded-xl border border-line dark:border-white/[0.1] p-2 text-xs bg-cream/30 dark:bg-[#192218] text-brown dark:text-[#f4f7f2]"
               />
             </div>
           </div>
 
           {/* Order Totals */}
-          <div className="rounded-xl border border-leaf/30 bg-leaf-soft/30 p-4 space-y-1">
-            <div className="flex justify-between text-brown-soft">
+          <div className="rounded-xl border border-leaf/30 dark:border-leaf/40 bg-leaf-soft/30 dark:bg-leaf/15 p-4 space-y-1">
+            <div className="flex justify-between text-brown-soft dark:text-[#98a793]">
               <span>Total Volume:</span>
-              <span className="font-bold text-leaf font-mono">{totalKg} kg</span>
+              <span className="font-bold text-leaf dark:text-lime-soft font-mono">{totalKg} kg</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-brown dark:text-[#f4f7f2]">
               <span>Subtotal:</span>
               <span className="font-mono">{bdt(subtotal)}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-emerald-800 font-bold">
+              <div className="flex justify-between text-emerald-800 dark:text-emerald-300 font-bold">
                 <span>Tier Discount ({tierLabel}):</span>
                 <span className="font-mono">-{bdt(discount)}</span>
               </div>
             )}
-            <div className="flex justify-between border-t border-line/60 pt-1 text-sm font-bold text-brown">
+            <div className="flex justify-between border-t border-line/60 dark:border-white/10 pt-1 text-sm font-bold text-brown dark:text-[#f4f7f2]">
               <span>Payable Total:</span>
-              <span className="font-mono text-base font-extrabold text-leaf-deep">{bdt(total)}</span>
+              <span className="font-mono text-base font-extrabold text-leaf-deep dark:text-lime-soft">{bdt(total)}</span>
             </div>
           </div>
 
@@ -368,7 +368,7 @@ export function NewOrderModal({
             <button
               type="button"
               onClick={onClose}
-              className="btn btn-ghost border border-line text-xs px-4 py-2"
+              className="btn btn-ghost border border-line dark:border-white/[0.12] text-xs px-4 py-2 text-brown dark:text-[#f4f7f2]"
             >
               Cancel
             </button>

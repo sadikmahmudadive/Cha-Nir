@@ -89,14 +89,14 @@ function HubTile({
   return (
     <Link
       href={href}
-      className="group flex flex-col items-center gap-1.5 rounded-xl border border-black/[0.06] bg-white p-3 text-center shadow-2xs transition-all hover:-translate-y-0.5 hover:border-leaf/40 hover:shadow-md"
+      className="group flex flex-col items-center gap-1.5 rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-[#151c14] p-3 text-center shadow-2xs transition-all hover:-translate-y-0.5 hover:border-leaf/40 dark:hover:border-leaf/50 hover:shadow-md"
       title={`${value}% ${caption}`}
     >
       <RadialRing value={value} size={60} stroke={6.5} color={color} colorTo={colorTo}>
-        <Icon className="size-4.5 text-leaf-deep transition-transform group-hover:scale-110" />
+        <Icon className="size-4.5 text-leaf-deep dark:text-lime-soft transition-transform group-hover:scale-110" />
       </RadialRing>
-      <p className="w-full truncate text-xs font-bold text-brown group-hover:text-leaf-deep">{label}</p>
-      <p className="-mt-1 font-mono text-[0.62rem] text-brown-soft">{meta}</p>
+      <p className="w-full truncate text-xs font-bold text-brown dark:text-[#f4f7f2] group-hover:text-leaf-deep dark:group-hover:text-lime-soft">{label}</p>
+      <p className="-mt-1 font-mono text-[0.62rem] text-brown-soft dark:text-[#98a793]">{meta}</p>
       <span
         className="rounded-full px-1.5 py-0.5 font-mono text-[0.6rem] font-bold"
         style={{ color, background: `${color}1a` }}
@@ -194,18 +194,18 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.06] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/[0.06] dark:border-white/[0.07] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-brown">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-brown dark:text-[#f4f7f2]">
               Welcome back, Adive
             </h2>
-            <span className="rounded-full bg-lime/40 px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-leaf-deep flex items-center gap-1">
+            <span className="rounded-full bg-lime/40 dark:bg-lime/20 px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-leaf-deep dark:text-lime-soft border border-lime/30 flex items-center gap-1">
               <Sparkles className="size-2.5" />
               Live System
             </span>
           </div>
-          <p className="text-xs text-brown-soft mt-1">
+          <p className="text-xs text-brown-soft dark:text-[#98a793] mt-1">
             Sylhet tea processing & dispatch terminal operating normally. {pendingOrders.length} orders awaiting fulfillment.
           </p>
         </div>
@@ -221,7 +221,7 @@ export default function AdminDashboardPage() {
           <Link
             href="/"
             target="_blank"
-            className="btn btn-ghost border border-black/[0.1] hover:border-leaf text-xs font-bold px-3.5 py-2 rounded-xl bg-white"
+            className="btn btn-ghost border border-black/[0.1] dark:border-white/[0.12] hover:border-leaf dark:hover:border-leaf text-xs font-bold px-3.5 py-2 rounded-xl bg-white dark:bg-[#161d15] text-brown dark:text-[#f4f7f2]"
           >
             <span>Live Store</span>
           </Link>
@@ -247,13 +247,13 @@ export default function AdminDashboardPage() {
               stroke={12}
               color={CHART_COLORS.leaf}
               colorTo={CHART_COLORS.lime}
-              trackColor="#e4ead6"
+              trackColor="var(--chart-track, #e4ead6)"
             >
-              <span className="font-mono text-xl font-extrabold text-brown leading-none">{stats.quotaRate}%</span>
-              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">of quota</span>
+              <span className="font-mono text-xl font-extrabold text-brown dark:text-[#f4f7f2] leading-none">{stats.quotaRate}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mt-0.5">of quota</span>
             </RadialRing>
             <div className="min-w-0 flex-1">
-              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft">Last 7 days</p>
+              <p className="mb-1 text-[0.68rem] font-bold text-brown-soft dark:text-[#98a793]">Last 7 days</p>
               <MiniSparklineBars data={REVENUE_SPARKLINE} height={50} />
             </div>
           </div>
@@ -321,13 +321,13 @@ export default function AdminDashboardPage() {
               color={CHART_COLORS.emerald}
               colorTo={CHART_COLORS.lime}
             >
-              <span className="font-mono text-xl font-extrabold text-brown leading-none">{stats.codClearedRate}%</span>
-              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-0.5">cleared</span>
+              <span className="font-mono text-xl font-extrabold text-brown dark:text-[#f4f7f2] leading-none">{stats.codClearedRate}%</span>
+              <span className="text-[0.6rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mt-0.5">cleared</span>
             </RadialRing>
             {courierItems.length > 0 ? (
               <ChartLegend items={courierItems} />
             ) : (
-              <p className="flex-1 text-[0.7rem] font-semibold text-emerald-700">All COD settled 🎉</p>
+              <p className="flex-1 text-[0.7rem] font-semibold text-emerald-700 dark:text-emerald-400">All COD settled 🎉</p>
             )}
           </div>
         </StatCard>
@@ -335,20 +335,20 @@ export default function AdminDashboardPage() {
 
       {/* Hubs with ring tiles */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="rounded-2xl border border-black/[0.08] bg-linear-to-b from-white to-[#fbfaf6] p-5 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between border-b border-black/[0.06] pb-3">
+        <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-linear-to-b from-white to-[#fbfaf6] dark:from-[#141a14] dark:to-[#111711] p-5 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.07] pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="size-8 rounded-xl bg-leaf-soft flex items-center justify-center text-leaf-deep">
+              <div className="size-8 rounded-xl bg-leaf-soft dark:bg-leaf/25 flex items-center justify-center text-leaf-deep dark:text-lime-soft">
                 <Store className="size-4" />
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-leaf-deep block">
+                <span className="text-xs font-bold uppercase tracking-wider text-leaf-deep dark:text-lime-soft block">
                   Storefront Administration
                 </span>
-                <span className="text-[0.68rem] text-brown-soft">Retail catalog, buyer database & store CMS</span>
+                <span className="text-[0.68rem] text-brown-soft dark:text-[#98a793]">Retail catalog, buyer database & store CMS</span>
               </div>
             </div>
-            <span className="rounded-full bg-cream-2 px-2.5 py-0.5 text-[0.65rem] font-bold text-brown">Store OS</span>
+            <span className="rounded-full bg-cream-2 dark:bg-white/[0.06] px-2.5 py-0.5 text-[0.65rem] font-bold text-brown dark:text-[#f4f7f2]">Store OS</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2.5">
@@ -385,20 +385,20 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-black/[0.08] bg-linear-to-b from-white to-[#fbfaf6] p-5 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between border-b border-black/[0.06] pb-3">
+        <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-linear-to-b from-white to-[#fbfaf6] dark:from-[#141a14] dark:to-[#111711] p-5 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.07] pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="size-8 rounded-xl bg-lime/30 flex items-center justify-center text-leaf-deep">
-                <Boxes className="size-4 text-leaf" />
+              <div className="size-8 rounded-xl bg-lime/30 dark:bg-lime/20 flex items-center justify-center text-leaf-deep dark:text-lime-soft">
+                <Boxes className="size-4 text-leaf dark:text-lime" />
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-leaf-deep block">
+                <span className="text-xs font-bold uppercase tracking-wider text-leaf-deep dark:text-lime-soft block">
                   Operations & ERP Engine
                 </span>
-                <span className="text-[0.68rem] text-brown-soft">Fulfillment, garden lots & wholesale ledger</span>
+                <span className="text-[0.68rem] text-brown-soft dark:text-[#98a793]">Fulfillment, garden lots & wholesale ledger</span>
               </div>
             </div>
-            <span className="rounded-full bg-cream-2 px-2.5 py-0.5 text-[0.65rem] font-bold text-brown">Supply OS</span>
+            <span className="rounded-full bg-cream-2 dark:bg-white/[0.06] px-2.5 py-0.5 text-[0.65rem] font-bold text-brown dark:text-[#f4f7f2]">Supply OS</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -452,37 +452,37 @@ export default function AdminDashboardPage() {
           <WeeklyPerformanceChart />
         </div>
 
-        <div className="flex flex-col rounded-2xl border border-black/[0.08] bg-white p-6 shadow-2xs">
-          <div className="flex items-center gap-2.5 border-b border-black/[0.06] pb-4">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-leaf-soft text-leaf-deep">
+        <div className="flex flex-col rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] p-6 shadow-2xs">
+          <div className="flex items-center gap-2.5 border-b border-black/[0.06] dark:border-white/[0.07] pb-4">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-leaf-soft dark:bg-leaf/25 text-leaf-deep dark:text-lime-soft">
               <HeartPulse className="size-4" />
             </div>
             <div>
-              <h3 className="font-serif text-base font-bold text-brown">Operations Health</h3>
-              <p className="text-xs text-brown-soft">Live ratios across orders, cash & stock</p>
+              <h3 className="font-serif text-base font-bold text-brown dark:text-[#f4f7f2]">Operations Health</h3>
+              <p className="text-xs text-brown-soft dark:text-[#98a793]">Live ratios across orders, cash & stock</p>
             </div>
           </div>
 
           <div className="flex flex-1 flex-col items-center justify-center gap-6 pt-6">
             <ActivityRings rings={healthRings} size={204} stroke={18} gap={6}>
-              <span className="font-mono text-4xl font-extrabold text-brown leading-none">{stats.healthScore}</span>
-              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-brown-soft/80 mt-1">health score</span>
+              <span className="font-mono text-4xl font-extrabold text-brown dark:text-[#f4f7f2] leading-none">{stats.healthScore}</span>
+              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-brown-soft/80 dark:text-[#98a793] mt-1">health score</span>
             </ActivityRings>
 
             <ul className="w-full space-y-2">
               {healthRings.map((ring) => (
                 <li
                   key={ring.label}
-                  className="flex items-center justify-between rounded-xl bg-cream/40 px-3 py-2 text-xs"
+                  className="flex items-center justify-between rounded-xl bg-cream/40 dark:bg-white/[0.04] px-3 py-2 text-xs"
                 >
-                  <span className="flex items-center gap-2 text-brown-soft">
+                  <span className="flex items-center gap-2 text-brown-soft dark:text-[#98a793]">
                     <span
                       className="size-2.5 rounded-full"
                       style={{ background: `linear-gradient(135deg, ${ring.color}, ${ring.colorTo})` }}
                     />
                     {ring.label}
                   </span>
-                  <span className="font-mono font-bold text-brown">{ring.value}%</span>
+                  <span className="font-mono font-bold text-brown dark:text-[#f4f7f2]">{ring.value}%</span>
                 </li>
               ))}
             </ul>
@@ -492,16 +492,16 @@ export default function AdminDashboardPage() {
 
       {/* Low stock alert */}
       {lowStockItems.length > 0 && (
-        <div className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xs">
+        <div className="rounded-2xl border border-amber-400/40 dark:border-amber-400/30 bg-amber-500/10 dark:bg-amber-500/15 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xs">
           <div className="flex items-start gap-3">
-            <div className="size-9 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-900 shrink-0 mt-0.5 shadow-2xs">
+            <div className="size-9 rounded-xl bg-amber-500/20 dark:bg-amber-500/30 border border-amber-400/30 dark:border-amber-400/40 flex items-center justify-center text-amber-900 dark:text-amber-300 shrink-0 mt-0.5 shadow-2xs">
               <AlertTriangle className="size-5" />
             </div>
             <div>
-              <p className="font-bold text-amber-950 text-sm">
+              <p className="font-bold text-amber-950 dark:text-amber-200 text-sm">
                 Warehouse Reorder Notice: {lowStockItems.length} Packaged SKUs below threshold
               </p>
-              <p className="text-xs text-amber-900/80 mt-0.5">
+              <p className="text-xs text-amber-900/80 dark:text-amber-300/80 mt-0.5">
                 {lowStockItems.slice(0, 3).map((i) => `${i.productName} (${i.variantLabel})`).join(", ")}
                 {lowStockItems.length > 3 ? ` +${lowStockItems.length - 3} more` : ""}
               </p>
@@ -510,7 +510,7 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/inventory"
-            className="btn btn-ghost border border-amber-400/50 text-xs font-bold py-2 px-4 rounded-xl text-amber-950 hover:bg-amber-500/20 bg-white/70 self-start sm:self-auto shrink-0 transition-colors"
+            className="btn btn-ghost border border-amber-400/50 dark:border-amber-400/40 text-xs font-bold py-2 px-4 rounded-xl text-amber-950 dark:text-amber-200 hover:bg-amber-500/20 dark:hover:bg-amber-500/30 bg-white/70 dark:bg-[#161d15] self-start sm:self-auto shrink-0 transition-colors"
           >
             Review Warehouse Stock
           </Link>
@@ -522,54 +522,54 @@ export default function AdminDashboardPage() {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-serif text-xl font-bold tracking-tight text-brown">Active Fulfillment Desk</h3>
-              <p className="text-xs text-brown-soft">Orders ready for warehouse packing and courier dispatch</p>
+              <h3 className="font-serif text-xl font-bold tracking-tight text-brown dark:text-[#f4f7f2]">Active Fulfillment Desk</h3>
+              <p className="text-xs text-brown-soft dark:text-[#98a793]">Orders ready for warehouse packing and courier dispatch</p>
             </div>
-            <Link href="/admin/orders" className="text-xs font-bold text-leaf hover:underline flex items-center gap-1 group">
+            <Link href="/admin/orders" className="text-xs font-bold text-leaf dark:text-lime-soft hover:underline flex items-center gap-1 group">
               <span>View all ({orders.length})</span>
               <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
 
-          <div className="rounded-2xl border border-black/[0.08] bg-white shadow-2xs overflow-hidden">
-            <div className="divide-y divide-black/[0.05]">
+          <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] shadow-2xs overflow-hidden">
+            <div className="divide-y divide-black/[0.05] dark:divide-white/[0.06]">
               {pendingOrders.length === 0 ? (
-                <div className="p-10 text-center text-brown-soft">
+                <div className="p-10 text-center text-brown-soft dark:text-[#98a793]">
                   <CheckCircle2 className="size-9 mx-auto text-emerald-500 mb-2" />
-                  <p className="font-bold text-sm text-brown">All pending orders dispatched!</p>
+                  <p className="font-bold text-sm text-brown dark:text-[#f4f7f2]">All pending orders dispatched!</p>
                   <p className="text-xs mt-1">Check back when new retail or wholesale orders arrive.</p>
                 </div>
               ) : (
                 pendingOrders.map((order) => (
                   <div
                     key={order.id}
-                    className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-cream/20 transition-colors"
+                    className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-cream/20 dark:hover:bg-white/[0.03] transition-colors"
                   >
                     <div className="space-y-1.5 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-leaf-deep">{order.id}</span>
+                        <span className="font-mono text-xs font-bold text-leaf-deep dark:text-lime-soft">{order.id}</span>
                         <OrderStatusBadge status={order.status} />
                         <BuyerTypeBadge type={order.customer.buyerType} />
                       </div>
-                      <p className="font-bold text-sm text-brown truncate">
+                      <p className="font-bold text-sm text-brown dark:text-[#f4f7f2] truncate">
                         {order.customer.name}
-                        <span className="font-normal text-brown-soft ml-2 text-xs">({order.customer.city})</span>
+                        <span className="font-normal text-brown-soft dark:text-[#98a793] ml-2 text-xs">({order.customer.city})</span>
                       </p>
-                      <p className="text-xs text-brown-soft line-clamp-1">
+                      <p className="text-xs text-brown-soft dark:text-[#98a793] line-clamp-1">
                         {order.items.map((i) => `${i.productName} (${i.variantLabel} × ${i.qty})`).join(", ")}
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-black/[0.05]">
+                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-black/[0.05] dark:border-white/[0.06]">
                       <div className="text-right">
-                        <p className="font-mono text-sm font-bold text-brown">{bdt(order.total)}</p>
-                        <p className="text-[0.68rem] font-mono text-leaf font-bold">{order.totalKg} kg</p>
+                        <p className="font-mono text-sm font-bold text-brown dark:text-[#f4f7f2]">{bdt(order.total)}</p>
+                        <p className="text-[0.68rem] font-mono text-leaf dark:text-lime-soft font-bold">{order.totalKg} kg</p>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => setSelectedSlipOrder(order)}
-                        className="rounded-xl border border-black/[0.08] hover:border-leaf p-2 text-brown-soft hover:text-brown hover:bg-cream transition-colors"
+                        className="rounded-xl border border-black/[0.08] dark:border-white/[0.08] hover:border-leaf dark:hover:border-leaf p-2 text-brown-soft dark:text-[#98a793] hover:text-brown dark:hover:text-[#f4f7f2] hover:bg-cream dark:hover:bg-white/[0.06] transition-colors"
                         title="Print Packing Slip"
                       >
                         <Printer className="size-4" />
@@ -610,24 +610,24 @@ export default function AdminDashboardPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-serif text-lg font-bold text-brown">Inbound B2B Quotes</h4>
-                <p className="text-xs text-brown-soft">Submitted from /wholesale desk</p>
+                <h4 className="font-serif text-lg font-bold text-brown dark:text-[#f4f7f2]">Inbound B2B Quotes</h4>
+                <p className="text-xs text-brown-soft dark:text-[#98a793]">Submitted from /wholesale desk</p>
               </div>
-              <Link href="/admin/wholesale" className="text-xs font-bold text-leaf hover:underline">CRM View</Link>
+              <Link href="/admin/wholesale" className="text-xs font-bold text-leaf dark:text-lime-soft hover:underline">CRM View</Link>
             </div>
 
-            <div className="rounded-2xl border border-black/[0.08] bg-white shadow-2xs divide-y divide-black/[0.05]">
+            <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] shadow-2xs divide-y divide-black/[0.05] dark:divide-white/[0.06]">
               {recentLeads.map((lead) => (
-                <div key={lead.id} className="p-3.5 space-y-1 hover:bg-cream/20 transition-colors">
+                <div key={lead.id} className="p-3.5 space-y-1 hover:bg-cream/20 dark:hover:bg-white/[0.03] transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-brown">{lead.name}</span>
-                    <span className="rounded-full bg-cream px-2 py-0.5 text-[0.65rem] font-bold text-leaf border border-black/[0.06]">
+                    <span className="font-bold text-xs text-brown dark:text-[#f4f7f2]">{lead.name}</span>
+                    <span className="rounded-full bg-cream dark:bg-white/[0.06] px-2.5 py-0.5 text-[0.65rem] font-bold text-leaf dark:text-lime-soft border border-black/[0.06] dark:border-white/[0.08]">
                       {lead.volume}
                     </span>
                   </div>
-                  <p className="text-[0.72rem] text-brown-soft">{lead.type} • {lead.phone}</p>
+                  <p className="text-[0.72rem] text-brown-soft dark:text-[#98a793]">{lead.type} • {lead.phone}</p>
                   {lead.notes && (
-                    <p className="text-[0.68rem] text-brown-soft italic line-clamp-1">&ldquo;{lead.notes}&rdquo;</p>
+                    <p className="text-[0.68rem] text-brown-soft dark:text-[#98a793] italic line-clamp-1">&ldquo;{lead.notes}&rdquo;</p>
                   )}
                 </div>
               ))}
@@ -638,18 +638,18 @@ export default function AdminDashboardPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-serif text-lg font-bold text-brown">Active Raw Tea Lots</h4>
-                <p className="text-xs text-brown-soft">Unblended leaf remaining</p>
+                <h4 className="font-serif text-lg font-bold text-brown dark:text-[#f4f7f2]">Active Raw Tea Lots</h4>
+                <p className="text-xs text-brown-soft dark:text-[#98a793]">Unblended leaf remaining</p>
               </div>
-              <Link href="/admin/inventory" className="text-xs font-bold text-leaf hover:underline">All Lots</Link>
+              <Link href="/admin/inventory" className="text-xs font-bold text-leaf dark:text-lime-soft hover:underline">All Lots</Link>
             </div>
 
-            <div className="rounded-2xl border border-black/[0.08] bg-white shadow-2xs p-4 space-y-3">
+            <div className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#141a14] shadow-2xs p-4 space-y-3">
               {rawLots.slice(0, 3).map((lot) => {
                 const remaining = pct(lot.remainingKg, lot.initialKg);
                 const low = remaining < 25;
                 return (
-                  <div key={lot.id} className="flex items-center gap-3 rounded-xl p-1.5 hover:bg-cream/30 transition-colors">
+                  <div key={lot.id} className="flex items-center gap-3 rounded-xl p-1.5 hover:bg-cream/30 dark:hover:bg-white/[0.04] transition-colors">
                     <RadialRing
                       value={remaining}
                       size={52}
@@ -657,13 +657,13 @@ export default function AdminDashboardPage() {
                       color={low ? CHART_COLORS.amber : CHART_COLORS.leaf}
                       colorTo={low ? CHART_COLORS.amberSoft : CHART_COLORS.lime}
                     >
-                      <span className="font-mono text-xs font-extrabold text-brown">{remaining}%</span>
+                      <span className="font-mono text-xs font-extrabold text-brown dark:text-[#f4f7f2]">{remaining}%</span>
                     </RadialRing>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-bold text-brown">{lot.garden.split(",")[0]}</p>
-                      <p className="truncate text-[0.68rem] text-brown-soft">{lot.grade}</p>
+                      <p className="truncate text-xs font-bold text-brown dark:text-[#f4f7f2]">{lot.garden.split(",")[0]}</p>
+                      <p className="truncate text-[0.68rem] text-brown-soft dark:text-[#98a793]">{lot.grade}</p>
                     </div>
-                    <span className="font-mono text-xs font-bold text-leaf shrink-0">{lot.remainingKg} kg</span>
+                    <span className="font-mono text-xs font-bold text-leaf dark:text-lime-soft shrink-0">{lot.remainingKg} kg</span>
                   </div>
                 );
               })}

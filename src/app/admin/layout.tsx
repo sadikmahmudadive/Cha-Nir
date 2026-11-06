@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AdminAuthProvider, useAdminAuth } from "@/lib/firebase/admin-auth";
+import { AdminThemeProvider } from "@/lib/theme/admin-theme";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 
@@ -63,12 +64,12 @@ function AdminShell({ children }: { children: ReactNode }) {
   // Loading indicator while verifying credentials / Firestore session
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#fcfbfa] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#fcfbfa] dark:bg-[#0c100c] text-brown dark:text-[#f4f7f2] flex items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
           <div className="size-11 rounded-2xl bg-linear-to-br from-leaf to-leaf-deep text-cream font-bold text-lg flex items-center justify-center shadow-md animate-pulse">
             CN
           </div>
-          <div className="flex items-center gap-2 text-xs font-bold text-brown-soft">
+          <div className="flex items-center gap-2 text-xs font-bold text-brown-soft dark:text-[#98a793]">
             <span className="size-2 rounded-full bg-leaf animate-ping" />
             <span>Verifying Admin Session...</span>
           </div>
@@ -83,7 +84,7 @@ function AdminShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#fcfbfa] text-brown font-sans antialiased selection:bg-lime/40">
+    <div className="flex min-h-screen bg-[#fcfbfa] dark:bg-[#0c100c] text-brown dark:text-[#f4f7f2] font-sans antialiased selection:bg-lime/40 transition-colors duration-200">
       {/* Sidebar */}
       <AdminSidebar
         mobileOpen={mobileSidebar}
@@ -122,7 +123,9 @@ function AdminShell({ children }: { children: ReactNode }) {
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <AdminAuthProvider>
-      <AdminShell>{children}</AdminShell>
+      <AdminThemeProvider>
+        <AdminShell>{children}</AdminShell>
+      </AdminThemeProvider>
     </AdminAuthProvider>
   );
 }
